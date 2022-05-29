@@ -57,13 +57,9 @@ public class Player : MonoBehaviour
     {
         // deltaTime is used if fixedupdate doesn't run at the right speed, would make it feel like slowed time.
         // Both with and without are good, what matters is that **both angle and translate depend on deltatime** if any.
-        // TODO: delete caps on first letter of direction & velocityVector?
-        angle += turnDirection * turnSharpness * Time.deltaTime;
-        angle = clampAngle(angle);
-        Vector2 velocityVector = VectorUtilities.CreatePolar(velocityMagnitude * Time.deltaTime, angle);
-        Vector2 direction = velocityVector.normalized;
-        this.transform.Translate(velocityVector);
-        spawnTrail(direction, angle);
+
+        calculateValues();
+        Move();
     }
 
     public void OnRight(InputAction.CallbackContext value)
@@ -81,19 +77,24 @@ public class Player : MonoBehaviour
         turnDirection = (rightPressed ? 1 : 0) - (leftPressed ? 1 : 0);
     }
 
-    // Gets float value of an angle in radians, returns clamped angle
-    private float clampAngle(float angle)
+    private void calculateValues()
     {
-        if (angle > 2 * Mathf.PI)
-        {
-            return clampAngle(angle - 2f * Mathf.PI);
+        // calculate angle
+        angle += turnDirection * turnSharpness * Time.deltaTime;
+        angle = VectorUtilities.clampAngle(angle);
+
+        // calculate vectors
+        velocityVector = VectorUtilities.CreatePolar(velocityMagnitude * Time.deltaTime, angle);
+        direction = velocityVector.normalized;
         }
-        else if (angle < 0)
+
+    private void Move()
         {
-            return clampAngle(angle + 2f * Mathf.PI);
+        body.transform.Translate(velocityVector); // move body
+
+        spawnTrail(direction, angle); // create trail
         }
-        return angle;
-    }
+
     // TODO: worry about this showing up on screen?
     // spawnTrail takes in a direction d and angle a. instatiates trailPiece in the location
     // 1 quarter of the radius of player to the opposite direction from the movement and
@@ -101,11 +102,11 @@ public class Player : MonoBehaviour
     public void spawnTrail(Vector2 d, float a)
     {
         Vector3 d3 = new Vector3(d.x, d.y, 0);
-        float radius = this.transform.localScale.x;
-        GameObject trail = Instantiate(trailPiece) as GameObject;
-        trail.transform.position = this.transform.position - 0.25f* radius * d3;
-        trail.transform.localScale = new Vector3(radius , radius/2 , 0);
-        trail.transform.Rotate(0, 0, -a * Mathf.Rad2Deg);
+        float radius = body.transform.localScale.x;
+        GameObject trailPiece = Instantiate(trailPiecePrefab, trail.transform) as GameObject;
+        trailPiece.transform.position = body.transform.position - 0.25f* radius * d3;
+        trailPiece.transform.localScale = new Vector3(radius , radius/2 , 0);
+        trailPiece.transform.Rotate(0, 0, -a * Mathf.Rad2Deg);
     }
 
 }
