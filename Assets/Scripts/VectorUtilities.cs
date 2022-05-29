@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 public static class VectorUtilities
 {
-    public static Vector2 CreatePolar(float r, float angle){
+
+    public static Vector2 CreatePolar(float radius, float angle){
         return new Vector2(
-            r * Mathf.Cos(angle),
-            r * Mathf.Sin(angle)
+            radius * Mathf.Sin(angle),
+            radius * Mathf.Cos(angle)
+            
         );
     }   //Unsure if this angle is upwards
 }
