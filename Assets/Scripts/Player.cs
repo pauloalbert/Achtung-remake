@@ -1,24 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static VectorUtilities;
 
 public class Player : MonoBehaviour
 {
-    private bool rightturn;
+    [SerializeField] private float turnSharpness = 0.5f;
+    [SerializeField] private float velocityMagnitude = 1f;
+    public Rigidbody2D rb;
 
-    [SerializeField] private float turnSharpness;
-
-    [SerializeField] private float velocityMagnitude;
-
-    // returns perpendicular normazlized vector to current velocity direction.
-    // 90 degrees clockwise if r is 1 and counter clockwise if r is -1.
-    // precondition: r must be 1 or -1 (NOT ASSERTING PRECONDITION FOR NOW)
-    private Vector2 forceDirection(int r)
-    {
-        float xAxisVelocity = (float) GetComponent<Rigidbody2D>().velocity.x / velocityMagnitude;
-        float yAxisVelocity = (float) GetComponent<Rigidbody2D>().velocity.y / velocityMagnitude;
-        return new Vector2(r * yAxisVelocity, -r * xAxisVelocity);
-    }
+    private float angle;
+    private int input_direction;
 
     // Start is called before the first frame update
     void Start()
@@ -29,18 +21,22 @@ public class Player : MonoBehaviour
     // Update is called once per frame. TODO: change the input system
     void Update()
     {
+        input_direction = 0;
         if (Input.GetKey(KeyCode.RightArrow))
         {
-            rightturn = true;
+            input_direction += 1;
+        }
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            input_direction -= 1;
         }
     }
 
     private void FixedUpdate()
     {
-        if (rightturn)
-        {
-            GetComponent<Rigidbody2D>().AddForce(turnSharpness * forceDirection(1),ForceMode2D.Force);
+        angle += input_direction * turnSharpness;
+        rb.MovePosition(rb.position + VectorUtilities.CreatePolar(velocityMagnitude, angle));
         }
-        rightturn = false;
-    }
+
+
 }
