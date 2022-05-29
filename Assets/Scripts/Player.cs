@@ -15,7 +15,8 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GetComponent<Rigidbody2D>().velocity = new Vector2(Mathf.Sqrt(velocityMagnitude), Mathf.Sqrt(velocityMagnitude));
+        angle = Random.Range(-180.0f, 180.0f);
+        FixedUpdate();      //Not sure if better with or without TODO: check
     }
 
     // Update is called once per frame. TODO: change the input system
@@ -36,7 +37,7 @@ public class Player : MonoBehaviour
     {
         angle += input_direction * turnSharpness;
         rb.MovePosition(rb.position + VectorUtilities.CreatePolar(velocityMagnitude, angle));
-        }
+    }
 
 
 }
