@@ -8,15 +8,15 @@ public class Player : MonoBehaviour
 {   
     [Header("Input")]
 
-    public bool right_input;
-    public bool left_input;
+    public bool rightPressed;
+    public bool leftPressed;
 
     [Space(10)]
 
     [Header("Player Values")]
 
     [Tooltip("Value for move direction: -1, 0, 1 for left forward and right respectivley.")]
-    public int move;
+    public int turnDirection;
     [Tooltip("true if player is alive, false if dead.")]
     public bool alive;
 
@@ -40,23 +40,23 @@ public class Player : MonoBehaviour
     {
         //deltaTime is used if fixedupdate doesn't run at the right speed, would make it feel like slowed time.
         //Both with and without are good, what matters is that **both angle and translate depend on deltatime** if any.
-        angle += move * turnSharpness * Time.deltaTime;  
+        angle += turnDirection * turnSharpness * Time.deltaTime;  
         this.transform.Translate(VectorUtilities.CreatePolar(velocityMagnitude * Time.deltaTime, angle));
     }
 
     public void OnRight(InputAction.CallbackContext value)
     {
-        right_input = value.ReadValueAsButton();
+        rightPressed = value.ReadValueAsButton();
     }
     
     public void OnLeft(InputAction.CallbackContext value)
     {
-        left_input = value.ReadValueAsButton();
+        leftPressed = value.ReadValueAsButton();
     }
     
     private void getInput()
     {
-        move = (right_input ? 1:0) - (left_input ? 1:0);
+        turnDirection = (rightPressed ? 1:0) - (leftPressed ? 1:0);
     }
 
 

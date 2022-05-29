@@ -236,14 +236,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 670765794}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce5179e1b0a1328478f766b49d60fd0b, type: 3}
+  m_Script: {fileID: 11500000, guid: 82c299b74c449ce4e8b7cd784fcf6170, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   right_input: 0
   left_input: 0
+  turnDirection: 0
+  alive: 0
   turnSharpness: 3
   velocityMagnitude: 2
-  move: 0
+  angle: 0
 --- !u!50 &670765796
 Rigidbody2D:
   serializedVersion: 4
