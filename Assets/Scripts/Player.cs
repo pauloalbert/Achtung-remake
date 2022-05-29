@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static VectorUtilities;
 
 public class Player : MonoBehaviour
 {   
@@ -24,12 +23,13 @@ public class Player : MonoBehaviour
     
     [Range(0.1f, 30f)] public float velocityMagnitude = 10f;
 
+    [Tooltip("The angle the player is pointing to in radians.")]
     public float angle;
 
     // Start is called before the first frame update
     void Start()
     {
-        angle = Random.Range(0, 2f*3.141592653589793238462643383279502f);
+        angle = Random.Range(0, 2f * Mathf.PI);
     }
 
     // Update is called once per frame
@@ -42,7 +42,8 @@ public class Player : MonoBehaviour
     {
         //deltaTime is used if fixedupdate doesn't run at the right speed, would make it feel like slowed time.
         //Both with and without are good, what matters is that **both angle and translate depend on deltatime** if any.
-        angle += turnDirection * turnSharpness * Time.deltaTime;  
+        angle += turnDirection * turnSharpness * Time.deltaTime;
+        angle = clampAngle(angle);
         this.transform.Translate(VectorUtilities.CreatePolar(velocityMagnitude * Time.deltaTime, angle));
     }
 
@@ -61,5 +62,16 @@ public class Player : MonoBehaviour
         turnDirection = (rightPressed ? 1:0) - (leftPressed ? 1:0);
     }
 
+    // Gets float value of an angle in radians, returns clamped angle
+    private float clampAngle(float angle)
+    {
+        if(angle > 2 * Mathf.PI){
+            return clampAngle(angle - 2f * Mathf.PI);
+        }
+        else if(angle < 0){
+            return clampAngle(angle + 2f * Mathf.PI);
+        }
+        return angle;
+    }
 
 }
