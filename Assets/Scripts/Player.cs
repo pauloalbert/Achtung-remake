@@ -16,7 +16,6 @@ public class Player : MonoBehaviour
     void Start()
     {
         angle = Random.Range(-180.0f, 180.0f);
-        FixedUpdate();      //Not sure if better with or without TODO: check
     }
 
     // Update is called once per frame. TODO: change the input system
