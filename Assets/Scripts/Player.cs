@@ -7,8 +7,8 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private float turnSharpness = 0.05f;
     [SerializeField] private float velocityMagnitude = 0.05f;
-    public Rigidbody2D rb;
 
+    
     private float angle;
     private int input_direction;
 
@@ -35,7 +35,7 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
         angle += input_direction * turnSharpness;
-        rb.MovePosition(rb.position + VectorUtilities.CreatePolar(velocityMagnitude, angle));
+        this.transform.Translate(VectorUtilities.CreatePolar(velocityMagnitude, angle));
     }
 
 
