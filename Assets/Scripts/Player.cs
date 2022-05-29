@@ -1,14 +1,47 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
-{
-    private bool rightturn;
+{   
+    [Header("Input")]
 
-    [SerializeField] private float turnSharpness;
+    public bool right_input;
+    public bool left_input;
 
-    [SerializeField] private float velocityMagnitude;
+    [Space(10)]
+
+    [Header("Player Values")]
+
+    [Tooltip("Value for move direction: -1, 0, 1 for left forward and right respectivley.")]
+    public int move;
+    [Tooltip("true if player is alive, false if dead.")]
+    public bool alive;
+
+    [Range(0.1f, 3f)] public float turnSharpness = 1f;
+    
+    [Range(0.1f, 3f)] public float velocityMagnitude = 1f;
+
+    private Rigidbody2D rigidbod;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        rigidbod = GetComponent<Rigidbody2D>();
+        rigidbod.velocity = new Vector2(Mathf.Sqrt(velocityMagnitude), Mathf.Sqrt(velocityMagnitude));
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        getInput();
+    }
+
+    private void FixedUpdate()
+    {
+        rigidbod.AddForce(turnSharpness * forceDirection(move),ForceMode2D.Force);
+    }
 
     // returns perpendicular normazlized vector to current velocity direction.
     // 90 degrees clockwise if r is 1 and counter clockwise if r is -1.
@@ -20,27 +53,16 @@ public class Player : MonoBehaviour
         return new Vector2(r * yAxisVelocity, -r * xAxisVelocity);
     }
 
-    // Start is called before the first frame update
-    void Start()
+    public void OnRight(InputAction.CallbackContext value)
     {
-        GetComponent<Rigidbody2D>().velocity = new Vector2(Mathf.Sqrt(velocityMagnitude), Mathf.Sqrt(velocityMagnitude));
+        right_input = value.ReadValueAsButton();
     }
-
-    // Update is called once per frame. TODO: change the input system
-    void Update()
+    public void OnLeft(InputAction.CallbackContext value)
     {
-        if (Input.GetKey(KeyCode.RightArrow))
-        {
-            rightturn = true;
-        }
+        left_input = value.ReadValueAsButton();
     }
-
-    private void FixedUpdate()
+    private void getInput()
     {
-        if (rightturn)
-        {
-            GetComponent<Rigidbody2D>().AddForce(turnSharpness * forceDirection(1),ForceMode2D.Force);
-        }
-        rightturn = false;
+        move = (right_input ? 1:0) - (left_input ? 1:0);
     }
 }
