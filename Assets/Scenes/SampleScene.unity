@@ -238,9 +238,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce5179e1b0a1328478f766b49d60fd0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  turnSharpness: 0.05
-  velocityMagnitude: 0.05
-  rb: {fileID: 670765796}
+  turnSharpness: 3
+  velocityMagnitude: 2
 --- !u!50 &670765796
 Rigidbody2D:
   serializedVersion: 4

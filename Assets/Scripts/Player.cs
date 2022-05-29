@@ -5,8 +5,8 @@ using static VectorUtilities;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private float turnSharpness = 0.05f;
-    [SerializeField] private float velocityMagnitude = 0.05f;
+    [SerializeField] private float turnSharpness = 3f;
+    [SerializeField] private float velocityMagnitude = 2f;
 
     
     private float angle;
@@ -34,8 +34,10 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        angle += input_direction * turnSharpness;
-        this.transform.Translate(VectorUtilities.CreatePolar(velocityMagnitude, angle));
+        //deltaTime is used if fixedupdate doesn't run at the right speed, would make it feel like slowed time.
+        //Both with and without are good, what matters is that **both angle and translate depend on deltatime** if any.
+        angle += input_direction * turnSharpness * Time.deltaTime;  
+        this.transform.Translate(VectorUtilities.CreatePolar(velocityMagnitude * Time.deltaTime, angle));
     }
 
 
