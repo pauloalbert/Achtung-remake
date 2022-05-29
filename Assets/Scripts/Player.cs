@@ -26,7 +26,20 @@ public class Player : MonoBehaviour
     [Tooltip("The angle the player is pointing to in radians.")]
     public float angle;
 
-    [SerializeField] private GameObject trailPiece;
+    [SerializeField] private Vector2 velocityVector;
+    [Tooltip("Normalized Vector2 pointing to player moving direction.")]
+    [SerializeField] private Vector2 direction;
+
+    [Space(10)]
+
+    [Header("Objects")]
+
+    [Tooltip("Trail piece prefab.")]
+    public GameObject trailPiecePrefab;
+    [Tooltip("Player's body object.")]
+    public GameObject body;
+    [Tooltip("Player's trail object.")]
+    public GameObject trail;
 
     // Start is called before the first frame update
     void Start()
