@@ -5,8 +5,8 @@ using static VectorUtilities;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private float turnSharpness = 0.5f;
-    [SerializeField] private float velocityMagnitude = 1f;
+    [SerializeField] private float turnSharpness = 0.05f;
+    [SerializeField] private float velocityMagnitude = 0.05f;
     public Rigidbody2D rb;
 
     private float angle;
