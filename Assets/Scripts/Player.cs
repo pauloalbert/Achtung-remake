@@ -86,14 +86,14 @@ public class Player : MonoBehaviour
         // calculate vectors
         velocityVector = VectorUtilities.CreatePolar(velocityMagnitude * Time.deltaTime, angle);
         direction = velocityVector.normalized;
-        }
+    }
 
     private void Move()
-        {
+    {
         body.transform.Translate(velocityVector); // move body
 
         spawnTrail(direction, angle); // create trail
-        }
+    }
 
     // TODO: worry about this showing up on screen?
     // spawnTrail takes in a direction d and angle a. instatiates trailPiece in the location
