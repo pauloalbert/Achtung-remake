@@ -236,13 +236,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 670765794}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ba893c4d81828b45baa9e0c1c9c5428, type: 3}
+  m_Script: {fileID: 11500000, guid: ce5179e1b0a1328478f766b49d60fd0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   right_input: 0
   left_input: 0
-  turnSharpness: 1
-  velocityMagnitude: 0.5
+  turnSharpness: 3
+  velocityMagnitude: 2
   move: 0
 --- !u!50 &670765796
 Rigidbody2D:
@@ -307,7 +307,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.9290893, g: 1, b: 0, a: 1}
+  m_Color: {r: 0.9987322, g: 1, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

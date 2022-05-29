@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static VectorUtilities;
 
 public class Player : MonoBehaviour
 {   
@@ -19,17 +20,14 @@ public class Player : MonoBehaviour
     [Tooltip("true if player is alive, false if dead.")]
     public bool alive;
 
-    [Range(0.1f, 3f)] public float turnSharpness = 1f;
+    [Range(0.1f, 8f)] public float turnSharpness = 3f;
     
-    [Range(0.1f, 3f)] public float velocityMagnitude = 1f;
-
-    private Rigidbody2D rigidbod;
+    [Range(0.1f, 8f)] public float velocityMagnitude = 2f;
 
     // Start is called before the first frame update
     void Start()
     {
-        rigidbod = GetComponent<Rigidbody2D>();
-        rigidbod.velocity = new Vector2(Mathf.Sqrt(velocityMagnitude), Mathf.Sqrt(velocityMagnitude));
+        angle = Random.Range(0, 2f*3.141592653589793238462643383279502f);
     }
 
     // Update is called once per frame
@@ -40,29 +38,26 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        rigidbod.AddForce(turnSharpness * forceDirection(move),ForceMode2D.Force);
-    }
-
-    // returns perpendicular normazlized vector to current velocity direction.
-    // 90 degrees clockwise if r is 1 and counter clockwise if r is -1.
-    // precondition: r must be 1 or -1 (NOT ASSERTING PRECONDITION FOR NOW)
-    private Vector2 forceDirection(int r)
-    {
-        float xAxisVelocity = (float) GetComponent<Rigidbody2D>().velocity.x / velocityMagnitude;
-        float yAxisVelocity = (float) GetComponent<Rigidbody2D>().velocity.y / velocityMagnitude;
-        return new Vector2(r * yAxisVelocity, -r * xAxisVelocity);
+        //deltaTime is used if fixedupdate doesn't run at the right speed, would make it feel like slowed time.
+        //Both with and without are good, what matters is that **both angle and translate depend on deltatime** if any.
+        angle += move * turnSharpness * Time.deltaTime;  
+        this.transform.Translate(VectorUtilities.CreatePolar(velocityMagnitude * Time.deltaTime, angle));
     }
 
     public void OnRight(InputAction.CallbackContext value)
     {
         right_input = value.ReadValueAsButton();
     }
+    
     public void OnLeft(InputAction.CallbackContext value)
     {
         left_input = value.ReadValueAsButton();
     }
+    
     private void getInput()
     {
         move = (right_input ? 1:0) - (left_input ? 1:0);
     }
+
+
 }
