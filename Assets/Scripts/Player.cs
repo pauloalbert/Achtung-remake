@@ -1,46 +1,44 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static VectorUtilities;
 
 public class Player : MonoBehaviour
 {
-    private bool rightturn;
+    [SerializeField] private float turnSharpness = 3f;
+    [SerializeField] private float velocityMagnitude = 2f;
 
-    [SerializeField] private float turnSharpness;
-
-    [SerializeField] private float velocityMagnitude;
-
-    // returns perpendicular normazlized vector to current velocity direction.
-    // 90 degrees clockwise if r is 1 and counter clockwise if r is -1.
-    // precondition: r must be 1 or -1 (NOT ASSERTING PRECONDITION FOR NOW)
-    private Vector2 forceDirection(int r)
-    {
-        float xAxisVelocity = (float) GetComponent<Rigidbody2D>().velocity.x / velocityMagnitude;
-        float yAxisVelocity = (float) GetComponent<Rigidbody2D>().velocity.y / velocityMagnitude;
-        return new Vector2(r * yAxisVelocity, -r * xAxisVelocity);
-    }
+    
+    private float angle;
+    private int input_direction;
 
     // Start is called before the first frame update
     void Start()
     {
-        GetComponent<Rigidbody2D>().velocity = new Vector2(Mathf.Sqrt(velocityMagnitude), Mathf.Sqrt(velocityMagnitude));
+        angle = Random.Range(-180.0f, 180.0f);
     }
 
     // Update is called once per frame. TODO: change the input system
     void Update()
     {
+        input_direction = 0;
         if (Input.GetKey(KeyCode.RightArrow))
         {
-            rightturn = true;
+            input_direction += 1;
+        }
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            input_direction -= 1;
         }
     }
 
     private void FixedUpdate()
     {
-        if (rightturn)
-        {
-            GetComponent<Rigidbody2D>().AddForce(turnSharpness * forceDirection(1),ForceMode2D.Force);
-        }
-        rightturn = false;
+        //deltaTime is used if fixedupdate doesn't run at the right speed, would make it feel like slowed time.
+        //Both with and without are good, what matters is that **both angle and translate depend on deltatime** if any.
+        angle += input_direction * turnSharpness * Time.deltaTime;  
+        this.transform.Translate(VectorUtilities.CreatePolar(velocityMagnitude * Time.deltaTime, angle));
     }
+
+
 }
