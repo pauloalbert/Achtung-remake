@@ -20,9 +20,9 @@ public class Player : MonoBehaviour
     [Tooltip("true if player is alive, false if dead.")]
     public bool alive;
 
-    [Range(0.1f, 8f)] public float turnSharpness = 3f;
+    [Range(0.1f, 10f)] public float turnSharpness = 2f;
     
-    [Range(0.1f, 8f)] public float velocityMagnitude = 2f;
+    [Range(0.1f, 30f)] public float velocityMagnitude = 10f;
 
     public float angle;
 
