@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 public static class VectorUtilities
 {
-
+    // does something??
     public static Vector2 CreatePolar(float radius, float angle){
         return new Vector2(
             radius * Mathf.Sin(angle),
@@ -22,4 +22,5 @@ public static class VectorUtilities
             return angle + (2f * Mathf.PI);
         }
         return angle;
+    }
 }
