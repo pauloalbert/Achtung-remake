@@ -24,6 +24,8 @@ public class Player : MonoBehaviour
     
     [Range(0.1f, 8f)] public float velocityMagnitude = 2f;
 
+    public float angle;
+
     // Start is called before the first frame update
     void Start()
     {
