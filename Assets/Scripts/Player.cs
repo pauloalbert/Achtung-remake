@@ -14,10 +14,10 @@ public class Player : MonoBehaviour
 
     [Header("Player Values")]
 
-    [Tooltip("Value for move direction: -1, 0, 1 for left forward and right respectivley.")]
-    public int turnDirection;
+    [Tooltip("Value for move direction: 1, 0, -1 for left forward and right respectivley.")]
+    public int turnDirection = 0;
     [Tooltip("true if player is alive, false if dead.")]
-    public bool alive;
+    public bool alive = true;
 
     [Range(0.1f, 10f)] public float turnSharpness = 2f;
 
@@ -44,7 +44,9 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // initial angle
         angle = Random.Range(0, 2f * Mathf.PI);
+        rotateObject(body,angle);
     }
 
     // Update is called once per frame
@@ -58,8 +60,10 @@ public class Player : MonoBehaviour
         // deltaTime is used if fixedupdate doesn't run at the right speed, would make it feel like slowed time.
         // Both with and without are good, what matters is that **both angle and translate depend on deltatime** if any.
 
-        calculateValues();
-        Move();
+        if(alive){
+            calculateValues();
+            Move();
+        }
     }
 
     public void OnRight(InputAction.CallbackContext value)
@@ -74,7 +78,7 @@ public class Player : MonoBehaviour
 
     private void getInput()
     {
-        turnDirection = (rightPressed ? 1 : 0) - (leftPressed ? 1 : 0);
+        turnDirection = (leftPressed ? 1 : 0) - (rightPressed ? 1 : 0);
     }
 
     private void calculateValues()
@@ -90,7 +94,9 @@ public class Player : MonoBehaviour
 
     private void Move()
     {
-        body.transform.Translate(velocityVector); // move body
+        body.transform.position += new Vector3(velocityVector.x,velocityVector.y,0); // move body
+
+        rotateObject(body,angle); // rotate body to looking angle
 
         spawnTrail(direction, angle); // create trail
     }
@@ -106,6 +112,8 @@ public class Player : MonoBehaviour
         GameObject trailPiece = Instantiate(trailPiecePrefab, trail.transform) as GameObject;
         trailPiece.transform.position = body.transform.position - 0.25f* radius * d3;
         trailPiece.transform.localScale = new Vector3(radius , radius/2 , 0);
+        trailPiece.transform.Rotate(0, 0, a * Mathf.Rad2Deg);
+    }
 
     // TODO: caculate where the colider should be according to the direction vector. Perhaps rename
     // to updateColliderPosition and then in fixed update call this. After fixed update, ontrigger is called, 
@@ -115,6 +123,10 @@ public class Player : MonoBehaviour
         // maybe unessecary?
     }
 
+    // Gets GameObject and angle in radians, rotates object to given angle
+    private void rotateObject(GameObject obj, float deg)
+    {
+        obj.transform.rotation = Quaternion.Euler(0,0,deg*Mathf.Rad2Deg);
     }
 
 }
