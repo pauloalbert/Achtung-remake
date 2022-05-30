@@ -106,7 +106,15 @@ public class Player : MonoBehaviour
         GameObject trailPiece = Instantiate(trailPiecePrefab, trail.transform) as GameObject;
         trailPiece.transform.position = body.transform.position - 0.25f* radius * d3;
         trailPiece.transform.localScale = new Vector3(radius , radius/2 , 0);
-        trailPiece.transform.Rotate(0, 0, -a * Mathf.Rad2Deg);
+
+    // TODO: caculate where the colider should be according to the direction vector. Perhaps rename
+    // to updateColliderPosition and then in fixed update call this. After fixed update, ontrigger is called, 
+    // and there you check if
+    private void caculateColliderPosition()
+    {
+        // maybe unessecary?
+    }
+
     }
 
 }
