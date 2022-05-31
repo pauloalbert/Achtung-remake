@@ -136,17 +136,20 @@ MonoBehaviour:
   turnDirection: 0
   alive: 1
   turnSharpness: 2
-  velocityMagnitude: 10
+  velocityMagnitude: 12
   angle: 0
   velocityVector: {x: 0, y: 0}
   direction: {x: 0, y: 0}
   maxHoleDelay: 7
   minHoleDelay: 1
   holeDuration: 0.3
+  playerName: 
+  wins: 0
   trailPiecePrefab: {fileID: 8734439403696564753, guid: 4431d9db410fe1f41b8085b47feb193f, type: 3}
   body: {fileID: 4422574102261269906}
   trail: {fileID: 4422574101796285339}
   color: {r: 0, g: 0, b: 0, a: 0}
+  gameManager: {fileID: 0}
 --- !u!114 &4422574101359404415
 MonoBehaviour:
   m_ObjectHideFlags: 0
