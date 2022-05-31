@@ -62,9 +62,6 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // initial angle
-        angle = Random.Range(0, 2f * Mathf.PI);
-        rotateObject(body,angle);
         newHoleDelay();
     }
 
