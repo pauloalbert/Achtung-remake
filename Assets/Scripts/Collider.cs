@@ -11,7 +11,7 @@ public class Collider : MonoBehaviour
     {
         if (player.isSpawningTrail())
         {
-            player.alive = false;
+            player.kill();
         }
     }
 }
