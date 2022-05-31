@@ -281,7 +281,14 @@ MonoBehaviour:
   playerPrefab: {fileID: 4422574101359404410, guid: 3e5c63709e837284cb5e592b98750f8f, type: 3}
   playerParent: {fileID: 1178631822}
   numberOfPlayers: 2
-  paused: 0
+  frozen: 1
+  names:
+  - Fred
+  - Greenee
+  - Pinkey
+  - Bluebell
+  - Willem
+  - Greydon
   colors:
   - {r: 1, g: 0.06252848, b: 0, a: 1}
   - {r: 0, g: 1, b: 0.0917871, a: 1}
@@ -891,7 +898,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2140427630}
   m_Layer: 0
-  m_Name: Mangers
+  m_Name: Managers
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

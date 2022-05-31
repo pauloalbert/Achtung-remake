@@ -21,8 +21,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool alive = true;
 
     [Range(0.1f, 10f)] public float turnSharpness = 2f;
-
-    [Range(0.1f, 30f)] public float velocityMagnitude = 10f;
+    [Range(0.1f, 50f)] public float velocityMagnitude = 12f;
 
     [Tooltip("The angle the player is pointing to in radians.")]
     public float angle;
@@ -33,18 +32,17 @@ public class PlayerController : MonoBehaviour
 
     [Tooltip("Time from last hole")]
     private float holeTimer = 0;
-
     [Tooltip("after this time passes from last hole a new hole will be made")]
     private float nextHoleDelay;
-
     [Tooltip("When randomizing how much time till the next hole, this is the maximium value it can take")]
     [SerializeField] private float maxHoleDelay = 7;
-
     [Tooltip("When randomizing how much time till the next hole, this is the minimum value it can take")]
     [SerializeField] private float minHoleDelay = 1;
-
     [Tooltip("Time duration of a hole")]
     [SerializeField] private float holeDuration = 0.3f;
+
+    public string playerName = ""; // needs to be setup in game manager
+    public int wins = 0;
 
     [Space(10)]
 
@@ -58,6 +56,15 @@ public class PlayerController : MonoBehaviour
     public GameObject trail;
     [Tooltip("Player's trail color.")]
     public Color color;
+
+    // refrence to GameManager
+    public GameManager gameManager;
+
+    // Awake is called when script is initalized
+    void Awake()
+    {
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -76,7 +83,7 @@ public class PlayerController : MonoBehaviour
         // deltaTime is used if fixedupdate doesn't run at the right speed, would make it feel like slowed time.
         // Both with and without are good, what matters is that **both angle and translate depend on deltatime** if any.
 
-        if(alive){
+        if(alive && !gameManager.isFrozen()){
             calculateValues();
             updateTrailTimer();
             Move();
@@ -133,6 +140,12 @@ public class PlayerController : MonoBehaviour
         alive = true;
     }
 
+    // getter for alive value
+    public bool isAlive()
+    {
+        return alive;
+    }
+
     // TODO: worry about this showing up on screen?
     // spawnTrail takes in a direction d and angle a. instatiates trailPiece in the location
     // 1 quarter of the radius of player to the opposite direction from the movement and
@@ -187,4 +200,9 @@ public class PlayerController : MonoBehaviour
         obj.transform.rotation = Quaternion.Euler(0,0,deg*Mathf.Rad2Deg);
     }
 
+    // delete player trail
+    public void deleteTrail()
+    {
+        // TODO: the function -_-
+    }
 }
