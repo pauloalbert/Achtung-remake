@@ -55,7 +55,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float minHoleDelay = 1;
 
     [Tooltip("Time duration of a hole")]
-    [SerializeField] private float holeDuration= 0.75f;
+    [Tooltip("Player's trail color.")]
+    public Color color;
 
     // Start is called before the first frame update
     void Start()
@@ -136,7 +137,7 @@ public class Player : MonoBehaviour
             GameObject trailPiece = Instantiate(trailPiecePrefab, trail.transform) as GameObject;
             trailPiece.transform.position = body.transform.position - 0.25f * radius * d3;
             trailPiece.transform.localScale = new Vector3(radius, radius / 2, 0);
-            trailPiece.transform.Rotate(0, 0, a * Mathf.Rad2Deg);
+            trailPiece.GetComponent<SpriteRenderer>().color = color; // set color
         }
         else return;
     
