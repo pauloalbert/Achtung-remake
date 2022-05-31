@@ -9,6 +9,9 @@ public class Collider : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        player.alive = false;
+        if (player.isSpawningTrail())
+        {
+            player.alive = false;
+        }
     }
 }
