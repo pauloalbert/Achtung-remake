@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
     public float yRange = 30;
 
     // list of Players that were instantiated
-    private List<Player> activePlayers;
+    private List<PlayerController> activePlayers;
 
     void Start()
     {
@@ -48,29 +48,30 @@ public class GameManager : MonoBehaviour
     void SetupPlayers()
     {
 
-        activePlayers = new List<Player>();
+        activePlayers = new List<PlayerController>();
 
         for(int i=0; i < numberOfPlayers; i++)
         {
             GameObject playerObject = Instantiate(playerPrefab, playerParent.transform) as GameObject;
-            Player player = playerObject.GetComponent<Player>();
-            PlayerInput playerInput = player.GetComponent<PlayerInput>();
+
+            PlayerController playerController = playerObject.GetComponent<PlayerController>();
+            PlayerInput playerInput = playerController.GetComponent<PlayerInput>();
 
             // make random values for starting rotation and position
-            player.angle = Random.Range(0, 2f * Mathf.PI);
+            playerController.angle = Random.Range(0, 2f * Mathf.PI);
             float x = Random.Range(-xRange, xRange);
             float y = Random.Range(-yRange, yRange);
             Vector3 spawnLocation = new Vector3(x,y,0);
             // rotate and move
-            player.rotateObject(player.body,player.angle);
-            player.body.transform.position = spawnLocation;
+            playerController.rotateObject(playerController.body,playerController.angle);
+            playerController.body.transform.position = spawnLocation;
 
             // TODO: add stuff to player (like controls and stuff)
-            playerInput.actions["left"].ApplyBindingOverride(controlPaths[i][0]);
+            playerInput.actions["Left"].ApplyBindingOverride(controlPaths[i][0]);
             playerInput.actions["Right"].ApplyBindingOverride(controlPaths[i][1]);
-            player.color = colors[i];
+            playerController.color = colors[i];
 
-            activePlayers.Add(player);
+            activePlayers.Add(playerController);
         }
     }
 

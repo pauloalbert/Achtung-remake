@@ -5,7 +5,7 @@ using UnityEngine;
 public class Collider : MonoBehaviour
 {
 
-    public Player player;
+    public PlayerController player;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
