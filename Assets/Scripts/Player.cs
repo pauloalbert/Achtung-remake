@@ -15,10 +15,10 @@ public class Player : MonoBehaviour
     [Header("Player Values")]
 
     [Tooltip("Value for move direction: 1, 0, -1 for left forward and right respectivley.")]
-    public int turnDirection = 0;
+    [SerializeField] private int turnDirection = 0;
 
     [Tooltip("true if player is alive, false if dead.")]
-    public bool alive = true;
+    [SerializeField] private bool alive = true;
 
     [Range(0.1f, 10f)] public float turnSharpness = 2f;
 
@@ -31,6 +31,21 @@ public class Player : MonoBehaviour
     [Tooltip("Normalized Vector2 pointing to player moving direction.")]
     [SerializeField] private Vector2 direction;
 
+    [Tooltip("Time from last hole")]
+    private float holeTimer = 0;
+
+    [Tooltip("after this time passes from last hole a new hole will be made")]
+    private float nextHoleDelay;
+
+    [Tooltip("When randomizing how much time till the next hole, this is the maximium value it can take")]
+    [SerializeField] private float maxHoleDelay = 7;
+
+    [Tooltip("When randomizing how much time till the next hole, this is the minimum value it can take")]
+    [SerializeField] private float minHoleDelay = 1;
+
+    [Tooltip("Time duration of a hole")]
+    [SerializeField] private float holeDuration = 0.3f;
+
     [Space(10)]
 
     [Header("Objects")]
@@ -41,20 +56,6 @@ public class Player : MonoBehaviour
     public GameObject body;
     [Tooltip("Player's trail object.")]
     public GameObject trail;
-
-    [Tooltip("Time from last hole")]
-    private float holeTimer = 0;
-
-    [Tooltip("after this time passes from last hole a new hole will be made")]
-    private float nextHoleDelay;
-
-    [Tooltip("When randomizing how much time till the next hole, this is the maximium value it can take")]
-    [SerializeField] private float maxHoleDelay = 5;
-
-    [Tooltip("When randomizing how much time till the next hole, this is the minimum value it can take")]
-    [SerializeField] private float minHoleDelay = 1;
-
-    [Tooltip("Time duration of a hole")]
     [Tooltip("Player's trail color.")]
     public Color color;
 
@@ -113,34 +114,45 @@ public class Player : MonoBehaviour
 
     }
 
+    // Moves player
     private void Move()
     {
         body.transform.position += new Vector3(velocityVector.x,velocityVector.y,0); // move body
 
         rotateObject(body,angle); // rotate body to looking angle
 
-        spawnTrail(direction, angle); // create trail
+        spawnTrail(); // create trail
     }
 
-   
+    // Kills the player (add necessary stuff later)
+    public void kill()
+    {
+        alive = false;
+    }
+
+    // Bring player back to life
+    public void revive()
+    {
+        alive = true;
+    }
 
     // TODO: worry about this showing up on screen?
     // spawnTrail takes in a direction d and angle a. instatiates trailPiece in the location
     // 1 quarter of the radius of player to the opposite direction from the movement and
     // matches the size according to the radius of player
-    public void spawnTrail(Vector2 d, float a)
+    public void spawnTrail()
     {
         if (isSpawningTrail() && alive)
         {
-            Vector3 d3 = new Vector3(d.x, d.y, 0);
+            GameObject trailPiece = Instantiate(trailPiecePrefab, trail.transform) as GameObject; // create trail piece
+            Vector3 d3 = new Vector3(direction.x, direction.y, 0);
             float radius = body.transform.localScale.x;
-            GameObject trailPiece = Instantiate(trailPiecePrefab, trail.transform) as GameObject;
-            trailPiece.transform.position = body.transform.position - 0.25f * radius * d3;
-            trailPiece.transform.localScale = new Vector3(radius, radius / 2, 0);
+            trailPiece.transform.position = body.transform.position - 0.25f * radius * d3; // move piece
+            trailPiece.transform.localScale = new Vector3(radius, radius / 2, 0); // scale piece
+            rotateObject(trailPiece, angle); // rotate piece
             trailPiece.GetComponent<SpriteRenderer>().color = color; // set color
         }
         else return;
-    
     }
 
     // randomizes the hole daly and changes the nextHoleDelay accordingly. Also resets the holeTime Counter
@@ -172,16 +184,8 @@ public class Player : MonoBehaviour
         else return true;
     }
 
-    // TODO: caculate where the colider should be according to the direction vector. Perhaps rename
-    // to updateColliderPosition and then in fixed update call this. After fixed update, ontrigger is called, 
-    // and there you check if
-    private void caculateColliderPosition()
-    {
-        // maybe unessecary?
-    }
-
     // Gets GameObject and angle in radians, rotates object to given angle
-    private void rotateObject(GameObject obj, float deg)
+    public void rotateObject(GameObject obj, float deg)
     {
         obj.transform.rotation = Quaternion.Euler(0,0,deg*Mathf.Rad2Deg);
     }
