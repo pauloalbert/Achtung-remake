@@ -34,8 +34,11 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
     public float xRange = 40;
     public float yRange = 30;
 
-    // list of Players that were instantiated
-    private List<PlayerController> activePlayers;
+    void Awake()
+    {
+        playersParentObject = GameObject.Find("Players");
+        settings = GameObject.Find("Settings").GetComponent<Settings>();
+    }
 
     void Start()
     {
@@ -66,12 +69,15 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
                 break;
             }
         }
-        else{ // temp way to unfreeze game
-            if(activePlayers[0].rightPressed)
-            {
-                frozen = false;
-            }
-        }
+
+    // getters
+    public List<PlayerController> getActivePlayers()
+    {
+        return activePlayers;
+    }
+    public int[] getScores()
+    {
+        return scores;
     }
 
     // Instantiates players and saves PlayerControllers in activePlayers list
@@ -98,19 +104,6 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
 
             activePlayers.Add(playerController);
         }
-    }
-
-    // Gets a PlayerController, rotates and moves player to a random area in the settings range
-    void randomizeLocation(PlayerController player)
-    {
-        // make random values for starting rotation and position
-        player.angle = Random.Range(0, 2f * Mathf.PI);
-        float x = Random.Range(-xRange, xRange);
-        float y = Random.Range(-yRange, yRange);
-        Vector3 location = new Vector3(x,y,0);
-        // rotate and move
-        player.rotateObject(player.body,player.angle);
-        player.body.transform.position = location;
     }
 
     // randomizes all player locations
@@ -193,5 +186,11 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
     public void freeze()
     {
         frozen = true;
+    }
+
+    public void toggleFreeze()
+    {
+        if(!frozen) freeze();
+        else frozen = false;
     }
 }

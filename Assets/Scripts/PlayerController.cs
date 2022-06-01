@@ -7,8 +7,8 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Input")]
 
-    public bool rightPressed;
-    public bool leftPressed;
+    [SerializeField] private bool rightPressed;
+    [SerializeField] private bool leftPressed;
 
     [Space(10)]
 
@@ -20,11 +20,11 @@ public class PlayerController : MonoBehaviour
     [Tooltip("true if player is alive, false if dead.")]
     [SerializeField] private bool alive = true;
 
-    [Range(0.1f, 10f)] public float turnSharpness = 2f;
-    [Range(0.1f, 50f)] public float velocityMagnitude = 12f;
+    [SerializeField] private float turnSharpness;
+    [SerializeField] private float velocityMagnitude;
 
     [Tooltip("The angle the player is pointing to in radians.")]
-    public float angle;
+    [SerializeField] private float angle;
 
     [SerializeField] private Vector2 velocityVector;
     [Tooltip("Normalized Vector2 pointing to player moving direction.")]
@@ -35,14 +35,14 @@ public class PlayerController : MonoBehaviour
     [Tooltip("after this time passes from last hole a new hole will be made")]
     private float nextHoleDelay;
     [Tooltip("When randomizing how much time till the next hole, this is the maximium value it can take")]
-    [SerializeField] private float maxHoleDelay = 7;
+    [SerializeField] private float maxHoleDelay;
     [Tooltip("When randomizing how much time till the next hole, this is the minimum value it can take")]
-    [SerializeField] private float minHoleDelay = 1;
+    [SerializeField] private float minHoleDelay;
     [Tooltip("Time duration of a hole")]
-    [SerializeField] private float holeDuration = 0.3f;
+    [SerializeField] private float holeDuration;
 
     public string playerName = ""; // needs to be setup in game manager
-    public int wins = 0;
+    public int playerNum; // player number
 
     [Space(10)]
 
@@ -51,9 +51,9 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Trail piece prefab.")]
     public GameObject trailPiecePrefab;
     [Tooltip("Player's body object.")]
-    public GameObject body;
+    private GameObject body;
     [Tooltip("Player's trail object.")]
-    public GameObject trail;
+    private GameObject trail;
     [Tooltip("Player's trail color.")]
     public Color color;
 
