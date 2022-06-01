@@ -138,7 +138,7 @@ public class PlayerController : MonoBehaviour
     {
         body.transform.position += new Vector3(velocityVector.x,velocityVector.y,0); // move body
 
-        rotateObject(body,angle); // rotate body to looking angle
+        VectorUtilities.rotateObject(body,angle); // rotate body to looking angle
 
         spawnTrail(); // create trail
     }
@@ -174,7 +174,7 @@ public class PlayerController : MonoBehaviour
             float radius = body.transform.localScale.x;
             trailPiece.transform.position = body.transform.position - 0.25f * radius * d3; // move piece
             trailPiece.transform.localScale = new Vector3(radius, radius / 2, 0); // scale piece
-            rotateObject(trailPiece, angle); // rotate piece
+            VectorUtilities.rotateObject(trailPiece, angle); // rotate piece
             trailPiece.GetComponent<SpriteRenderer>().color = color; // set color
         }
         else return;
@@ -215,9 +215,16 @@ public class PlayerController : MonoBehaviour
         obj.transform.rotation = Quaternion.Euler(0,0,deg*Mathf.Rad2Deg);
     }
 
-    // delete player trail
-    public void deleteTrail()
+    // Rotates and moves player to a random area in the map range
+    public void randomizeLocation()
     {
-        // TODO: the function -_-
+        // make random values for starting rotation and position
+        angle = Random.Range(0, 2f * Mathf.PI);
+        float x = Random.Range(-gameManager.xRange, gameManager.xRange);
+        float y = Random.Range(-gameManager.yRange, gameManager.yRange);
+        Vector3 location = new Vector3(x,y,0);
+        // rotate and move
+        VectorUtilities.rotateObject(body,angle);
+        body.transform.position = location;
     }
 }
