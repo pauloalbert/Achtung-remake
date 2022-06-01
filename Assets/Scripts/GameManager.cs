@@ -46,29 +46,55 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
         scatterPlayers();
     }
 
-    void Update()
+    void FixedUpdate()
     {   
-        if(!frozen)
+        switch (roundState)
         {
-            GameState state = checkGameState();
-            switch(state)
+            case GameState.ONGOING:
             {
-                case GameState.WON:
-                {
-                    PlayerController winner = getWinner();
-                    Debug.Log(winner.playerName + " Wins!");
-                    winner.wins += 1;
-                    freeze();
+                if(pressedPause) {
+                    pressedPause = false;
+                    toggleFreeze();
                 }
-                break;
-                case GameState.TIED:
+
+                if(!frozen)
                 {
-                    Debug.Log("Tied");
-                    freeze();
+                    roundState = checkGameState();
                 }
-                break;
             }
+            break;
+            case GameState.ENDED:
+            {
+                if(pressedPause){
+                    pressedPause = false;
+                    nextRound();
+                }
+            }
+            break;
+            case GameState.WON: 
+            {
+                roundState = GameState.ENDED;
+                freeze();
+
+                PlayerController winner = getWinner();
+                Debug.Log(winner.playerName + " Wins!");
+
+                if(scores[winner.playerNum-1] >= settings.goal)
+                {
+                    winGame(winner);
+                }
+            }
+            break;
+            case GameState.TIED:
+            {
+                roundState = GameState.ENDED;
+                    freeze();
+
+                    Debug.Log("Tied");
+            }
+            break;
         }
+    }
 
     // getters
     public List<PlayerController> getActivePlayers()
@@ -87,20 +113,23 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
         activePlayers = new List<PlayerController>();
 
         // Instantiate players
-        for(int i=0; i < numberOfPlayers; i++)
+        for(int i=0; i < settings.numberOfPlayers; i++)
         {
-            GameObject playerObject = Instantiate(playerPrefab, playerParent.transform) as GameObject;
+            GameObject playerObject = Instantiate(playerPrefab, playersParentObject.transform) as GameObject;
 
             PlayerController playerController = playerObject.GetComponent<PlayerController>();
             PlayerInput playerInput = playerController.GetComponent<PlayerInput>();
 
+            // Set player number
+            playerController.playerNum = i+1;
             // Set name
-            playerController.playerName = names[i];
+            playerObject.name = settings.names[i];
+            playerController.playerName = settings.names[i];
             // Set color
-            playerController.color = colors[i];
+            playerController.color = settings.colors[i];
             // Set controls
-            playerInput.actions["Left"].ApplyBindingOverride(controlPaths[i][0]);
-            playerInput.actions["Right"].ApplyBindingOverride(controlPaths[i][1]);
+            playerInput.actions["Left"].ApplyBindingOverride(settings.controlPaths[i][0]);
+            playerInput.actions["Right"].ApplyBindingOverride(settings.controlPaths[i][1]);
 
             activePlayers.Add(playerController);
         }
@@ -111,7 +140,7 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
     {
         foreach (PlayerController playerController in activePlayers)
         {
-            randomizeLocation(playerController);
+            playerController.randomizeLocation();
         }
     }
 
@@ -170,12 +199,26 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
     }
 
     // Revives players and sets new locations 
-    public void resetGame()
+    public void nextRound()
     {
+        freeze();
         // TODO: reset relevant timers and values
+        roundState = GameState.ONGOING;
         scatterPlayers();
         deleteAllTrails();
         reviveAll();
+    }
+
+    // Starts a new game
+    public void newGame()
+    {
+        // delete players and start over
+    }
+
+    // Gets the PlayerController that won the game, does winning stuff
+    private void winGame(PlayerController winner)
+    {
+
     }
 
     public bool isFrozen()
@@ -192,5 +235,21 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
     {
         if(!frozen) freeze();
         else frozen = false;
+    }
+
+    // give all players that are alive a point
+    public void giveAllAlivePoints()
+    {
+        foreach(PlayerController player in activePlayers)
+        {
+            if(player.isAlive()){
+                scores[player.playerNum-1]++;
+            }
+        }
+    }
+
+    public void OnPause(InputAction.CallbackContext value)
+    {
+        pressedPause = value.performed;
     }
 }

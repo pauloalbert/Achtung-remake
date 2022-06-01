@@ -147,6 +147,7 @@ public class PlayerController : MonoBehaviour
     public void kill()
     {
         alive = false;
+        gameManager.giveAllAlivePoints();
     }
 
     // Bring player back to life
@@ -209,10 +210,13 @@ public class PlayerController : MonoBehaviour
         else return true;
     }
 
-    // Gets GameObject and angle in radians, rotates object to given angle
-    public void rotateObject(GameObject obj, float deg)
+    // Delete player trail
+    public void deleteTrail()
     {
-        obj.transform.rotation = Quaternion.Euler(0,0,deg*Mathf.Rad2Deg);
+        foreach (Transform child in trail.transform)
+        {
+            Destroy(child.gameObject);
+        }
     }
 
     // Rotates and moves player to a random area in the map range
