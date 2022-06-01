@@ -3,7 +3,12 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Wall
+  - Teleporter
+  - Powerup
+  - player
+  - Trail
   layers:
   - Default
   - TransparentFX
@@ -41,9 +46,12 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Trail
+    uniqueID: 2038732623
+    locked: 0
   - name: Body
     uniqueID: 1015515061
     locked: 0
-  - name: Trail
-    uniqueID: 2038732623
+  - name: Wall
+    uniqueID: 1663961909
     locked: 0
