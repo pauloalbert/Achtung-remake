@@ -7,8 +7,8 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Input")]
 
-    public bool rightPressed;
-    public bool leftPressed;
+    [SerializeField] private bool rightPressed;
+    [SerializeField] private bool leftPressed;
 
     [Space(10)]
 
@@ -20,11 +20,11 @@ public class PlayerController : MonoBehaviour
     [Tooltip("true if player is alive, false if dead.")]
     [SerializeField] private bool alive = true;
 
-    [Range(0.1f, 10f)] public float turnSharpness = 2f;
-    [Range(0.1f, 50f)] public float velocityMagnitude = 12f;
+    [SerializeField] private float turnSharpness;
+    [SerializeField] private float velocityMagnitude;
 
     [Tooltip("The angle the player is pointing to in radians.")]
-    public float angle;
+    [SerializeField] private float angle;
 
     [SerializeField] private Vector2 velocityVector;
     [Tooltip("Normalized Vector2 pointing to player moving direction.")]
@@ -35,14 +35,14 @@ public class PlayerController : MonoBehaviour
     [Tooltip("after this time passes from last hole a new hole will be made")]
     private float nextHoleDelay;
     [Tooltip("When randomizing how much time till the next hole, this is the maximium value it can take")]
-    [SerializeField] private float maxHoleDelay = 7;
+    [SerializeField] private float maxHoleDelay;
     [Tooltip("When randomizing how much time till the next hole, this is the minimum value it can take")]
-    [SerializeField] private float minHoleDelay = 1;
+    [SerializeField] private float minHoleDelay;
     [Tooltip("Time duration of a hole")]
-    [SerializeField] private float holeDuration = 0.3f;
+    [SerializeField] private float holeDuration;
 
     public string playerName = ""; // needs to be setup in game manager
-    public int wins = 0;
+    public int playerNum; // player number
 
     [Space(10)]
 
@@ -51,25 +51,29 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Trail piece prefab.")]
     public GameObject trailPiecePrefab;
     [Tooltip("Player's body object.")]
-    public GameObject body;
+    private GameObject body;
     [Tooltip("Player's trail object.")]
-    public GameObject trail;
+    private GameObject trail;
     [Tooltip("Player's trail color.")]
     public Color color;
 
-    // refrence to GameManager
-    public GameManager gameManager;
+    // refrence to GameManager and Settings
+    private GameManager gameManager;
+    private Settings settings;
 
     // Awake is called when script is initalized
     void Awake()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        settings = settings = GameObject.Find("Settings").GetComponent<Settings>();
+        body = gameObject.transform.Find("Body").gameObject;
+        trail = gameObject.transform.Find("Trail").gameObject;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        newHoleDelay();
+        setInitialValues();
     }
 
     // Update is called once per frame
@@ -88,6 +92,17 @@ public class PlayerController : MonoBehaviour
             updateTrailTimer();
             Move();
         }
+    }
+
+    // gets initial values from settings
+    private void setInitialValues()
+    {
+        newHoleDelay();
+        velocityMagnitude = settings.initialSpeed;
+        turnSharpness = settings.initialTurnSharpness;
+        holeDuration = settings.initialHoleDuration;
+        minHoleDelay = settings.initialMinHoleDelay;
+        maxHoleDelay = settings.initialMaxHoleDelay;
     }
 
     public void OnRight(InputAction.CallbackContext value)
@@ -123,7 +138,7 @@ public class PlayerController : MonoBehaviour
     {
         body.transform.position += new Vector3(velocityVector.x,velocityVector.y,0); // move body
 
-        rotateObject(body,angle); // rotate body to looking angle
+        VectorUtilities.rotateObject(body,angle); // rotate body to looking angle
 
         spawnTrail(); // create trail
     }
@@ -132,6 +147,7 @@ public class PlayerController : MonoBehaviour
     public void kill()
     {
         alive = false;
+        gameManager.giveAllAlivePoints();
     }
 
     // Bring player back to life
@@ -159,7 +175,7 @@ public class PlayerController : MonoBehaviour
             float radius = body.transform.localScale.x;
             trailPiece.transform.position = body.transform.position - 0.25f * radius * d3; // move piece
             trailPiece.transform.localScale = new Vector3(radius, radius / 2, 0); // scale piece
-            rotateObject(trailPiece, angle); // rotate piece
+            VectorUtilities.rotateObject(trailPiece, angle); // rotate piece
             trailPiece.GetComponent<SpriteRenderer>().color = color; // set color
         }
         else return;
@@ -194,15 +210,25 @@ public class PlayerController : MonoBehaviour
         else return true;
     }
 
-    // Gets GameObject and angle in radians, rotates object to given angle
-    public void rotateObject(GameObject obj, float deg)
-    {
-        obj.transform.rotation = Quaternion.Euler(0,0,deg*Mathf.Rad2Deg);
-    }
-
-    // delete player trail
+    // Delete player trail
     public void deleteTrail()
     {
-        // TODO: the function -_-
+        foreach (Transform child in trail.transform)
+        {
+            Destroy(child.gameObject);
+        }
+    }
+
+    // Rotates and moves player to a random area in the map range
+    public void randomizeLocation()
+    {
+        // make random values for starting rotation and position
+        angle = Random.Range(0, 2f * Mathf.PI);
+        float x = Random.Range(-gameManager.xRange, gameManager.xRange);
+        float y = Random.Range(-gameManager.yRange, gameManager.yRange);
+        Vector3 location = new Vector3(x,y,0);
+        // rotate and move
+        VectorUtilities.rotateObject(body,angle);
+        body.transform.position = location;
     }
 }

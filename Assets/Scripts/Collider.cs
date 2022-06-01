@@ -5,13 +5,46 @@ using UnityEngine;
 public class Collider : MonoBehaviour
 {
 
-    public PlayerController player;
+    private PlayerController playerController;
+
+    void Awake()
+    {
+        playerController = gameObject.GetComponentInParent<PlayerController>();
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (player.isSpawningTrail())
+    {   
+        if (playerController.isAlive())
         {
-            player.kill();
+            switch(other.tag)
+            {
+                case "Trail":
+                {
+                    if (playerController.isSpawningTrail())
+                    {
+                        playerController.kill();
+                    }
+                }
+                break;
+                case "Wall":
+                {
+                    if (playerController.isSpawningTrail())
+                    {
+                        playerController.kill();
+                    }
+                }
+                break;
+                case "Teleporter":
+                {
+
+                }
+                break;
+                case "Powerup":
+                {
+
+                }
+                break;
+            }
         }
     }
 }

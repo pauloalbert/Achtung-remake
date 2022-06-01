@@ -7,58 +7,38 @@ enum GameState
 {
     ONGOING,
     WON,
-    TIED
+    TIED,
+    ENDED
 }
 
 public class GameManager : MonoBehaviour // TODO: make class singleton
 {
     public GameObject playerPrefab;
-    public GameObject playerParent;
-    public int numberOfPlayers = 1;
+    private GameObject playersParentObject;
+    private Settings settings;
+
+    private bool pressedPause = false;
 
     // true if game is frozen, false if not
     [SerializeField] private bool frozen = true;
 
-    public const int maxPlayers = 6;
-
-    public string[] names =
-    {
-        "Fred",
-        "Greenlee",
-        "Pinkey",
-        "Bluebell",
-        "Willem",
-        "Greydon"
-    };
-
-    // array ordered by player number of their respective colors
-    public Color[] colors = new Color[]
-    {
-            Color.red,
-            Color.green,
-            new Color(1f,0.7f,0.8f),
-            Color.cyan,
-            new Color(1f,0.6f,0f),
-            Color.gray
-    };
-
-    // array ordered by player number of their respective control paths
-    public string[][] controlPaths =
-    {
-        new string[] {"<Keyboard>/#(a)", "<Keyboard>/#(s)"},
-        new string[] {"<Keyboard>/LeftArrow", "<Keyboard>/RightArrow"},
-        new string[] {"<Keyboard>/#(,)", "<Keyboard>/#(.)"},
-        new string[] {"<Keyboard>/#(c)", "<Keyboard>/#(v)"},
-        new string[] {"<Keyboard>/#([)", "<Keyboard>/#(])"},
-        new string[] {"<Keyboard>/#(`)", "<Keyboard>/#(1)"},
-    };
-
-    // TODO: make range values depend on borders
-    public float xRange = 40;
-    public float yRange = 30;
+    [SerializeField] private GameState roundState = GameState.ONGOING;
 
     // list of Players that were instantiated
     private List<PlayerController> activePlayers;
+
+    // current player scores sorted by player number
+    [SerializeField] private int[] scores = {0,0,0,0,0,0};
+
+    // TODO: make range values depend on borders ((system might change))
+    public float xRange = 40;
+    public float yRange = 30;
+
+    void Awake()
+    {
+        playersParentObject = GameObject.Find("Players");
+        settings = GameObject.Find("Settings").GetComponent<Settings>();
+    }
 
     void Start()
     {
@@ -66,35 +46,64 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
         scatterPlayers();
     }
 
-    void Update()
+    void FixedUpdate()
     {   
-        if(!frozen)
+        switch (roundState)
         {
-            GameState state = checkGameState();
-            switch(state)
+            case GameState.ONGOING:
             {
-                case GameState.WON:
-                {
-                    PlayerController winner = getWinner();
-                    Debug.Log(winner.playerName + " Wins!");
-                    winner.wins += 1;
-                    freeze();
+                if(pressedPause) {
+                    pressedPause = false;
+                    toggleFreeze();
                 }
-                break;
-                case GameState.TIED:
+
+                if(!frozen)
                 {
+                    roundState = checkGameState();
+                }
+            }
+            break;
+            case GameState.ENDED:
+            {
+                if(pressedPause){
+                    pressedPause = false;
+                    nextRound();
+                }
+            }
+            break;
+            case GameState.WON: 
+            {
+                roundState = GameState.ENDED;
+                freeze();
+
+                PlayerController winner = getWinner();
+                Debug.Log(winner.playerName + " Wins!");
+
+                if(scores[winner.playerNum-1] >= settings.goal)
+                {
+                    winGame(winner);
+                }
+            }
+            break;
+            case GameState.TIED:
+            {
+                roundState = GameState.ENDED;
+                    freeze();
+
                     Debug.Log("Tied");
-                    freeze();
-                }
-                break;
             }
+            break;
         }
-        else{ // temp way to unfreeze game
-            if(activePlayers[0].rightPressed)
-            {
-                frozen = false;
-            }
-        }
+    }
+
+    // getters
+    public List<PlayerController> getActivePlayers()
+    {
+        return activePlayers;
+    }
+    public int[] getScores()
+    {
+        return scores;
     }
 
     // Instantiates players and saves PlayerControllers in activePlayers list
@@ -104,36 +113,26 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
         activePlayers = new List<PlayerController>();
 
         // Instantiate players
-        for(int i=0; i < numberOfPlayers; i++)
+        for(int i=0; i < settings.numberOfPlayers; i++)
         {
-            GameObject playerObject = Instantiate(playerPrefab, playerParent.transform) as GameObject;
+            GameObject playerObject = Instantiate(playerPrefab, playersParentObject.transform) as GameObject;
 
             PlayerController playerController = playerObject.GetComponent<PlayerController>();
             PlayerInput playerInput = playerController.GetComponent<PlayerInput>();
 
+            // Set player number
+            playerController.playerNum = i+1;
             // Set name
-            playerController.playerName = names[i];
+            playerObject.name = settings.names[i];
+            playerController.playerName = settings.names[i];
             // Set color
-            playerController.color = colors[i];
+            playerController.color = settings.colors[i];
             // Set controls
-            playerInput.actions["Left"].ApplyBindingOverride(controlPaths[i][0]);
-            playerInput.actions["Right"].ApplyBindingOverride(controlPaths[i][1]);
+            playerInput.actions["Left"].ApplyBindingOverride(settings.controlPaths[i][0]);
+            playerInput.actions["Right"].ApplyBindingOverride(settings.controlPaths[i][1]);
 
             activePlayers.Add(playerController);
         }
-    }
-
-    // Gets a PlayerController, rotates and moves player to a random area in the settings range
-    void randomizeLocation(PlayerController player)
-    {
-        // make random values for starting rotation and position
-        player.angle = Random.Range(0, 2f * Mathf.PI);
-        float x = Random.Range(-xRange, xRange);
-        float y = Random.Range(-yRange, yRange);
-        Vector3 location = new Vector3(x,y,0);
-        // rotate and move
-        player.rotateObject(player.body,player.angle);
-        player.body.transform.position = location;
     }
 
     // randomizes all player locations
@@ -141,7 +140,7 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
     {
         foreach (PlayerController playerController in activePlayers)
         {
-            randomizeLocation(playerController);
+            playerController.randomizeLocation();
         }
     }
 
@@ -200,12 +199,26 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
     }
 
     // Revives players and sets new locations 
-    public void resetGame()
+    public void nextRound()
     {
+        freeze();
         // TODO: reset relevant timers and values
+        roundState = GameState.ONGOING;
         scatterPlayers();
         deleteAllTrails();
         reviveAll();
+    }
+
+    // Starts a new game
+    public void newGame()
+    {
+        // delete players and start over
+    }
+
+    // Gets the PlayerController that won the game, does winning stuff
+    private void winGame(PlayerController winner)
+    {
+
     }
 
     public bool isFrozen()
@@ -216,5 +229,27 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
     public void freeze()
     {
         frozen = true;
+    }
+
+    public void toggleFreeze()
+    {
+        if(!frozen) freeze();
+        else frozen = false;
+    }
+
+    // give all players that are alive a point
+    public void giveAllAlivePoints()
+    {
+        foreach(PlayerController player in activePlayers)
+        {
+            if(player.isAlive()){
+                scores[player.playerNum-1]++;
+            }
+        }
+    }
+
+    public void OnPause(InputAction.CallbackContext value)
+    {
+        pressedPause = value.performed;
     }
 }

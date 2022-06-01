@@ -96,8 +96,8 @@ GameObject:
   - component: {fileID: 1199469542441818629}
   - component: {fileID: 4422574101359404415}
   m_Layer: 0
-  m_Name: Player
-  m_TagString: Untagged
+  m_Name: PlayerPrefab
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -136,15 +136,15 @@ MonoBehaviour:
   turnDirection: 0
   alive: 1
   turnSharpness: 2
-  velocityMagnitude: 12
+  velocityMagnitude: 18
   angle: 0
   velocityVector: {x: 0, y: 0}
   direction: {x: 0, y: 0}
-  maxHoleDelay: 7
+  maxHoleDelay: 6
   minHoleDelay: 1
-  holeDuration: 0.3
+  holeDuration: 0.2
   playerName: 
-  wins: 0
+  playerNum: 0
   trailPiecePrefab: {fileID: 8734439403696564753, guid: 4431d9db410fe1f41b8085b47feb193f, type: 3}
   body: {fileID: 4422574102261269906}
   trail: {fileID: 4422574101796285339}
@@ -318,7 +318,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1015515061
-  m_SortingLayer: 1
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 0.8712125, g: 1, b: 0, a: 1}
@@ -390,4 +390,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2619b0ec991e99242adbabd7e9d217f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1199469542441818629}
