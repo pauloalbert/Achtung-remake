@@ -57,19 +57,23 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Player's trail color.")]
     public Color color;
 
-    // refrence to GameManager
-    public GameManager gameManager;
+    // refrence to GameManager and Settings
+    private GameManager gameManager;
+    private Settings settings;
 
     // Awake is called when script is initalized
     void Awake()
     {
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        settings = settings = GameObject.Find("Settings").GetComponent<Settings>();
+        body = gameObject.transform.Find("Body").gameObject;
+        trail = gameObject.transform.Find("Trail").gameObject;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        newHoleDelay();
+        setInitialValues();
     }
 
     // Update is called once per frame
@@ -88,6 +92,17 @@ public class PlayerController : MonoBehaviour
             updateTrailTimer();
             Move();
         }
+    }
+
+    // gets initial values from settings
+    private void setInitialValues()
+    {
+        newHoleDelay();
+        velocityMagnitude = settings.initialSpeed;
+        turnSharpness = settings.initialTurnSharpness;
+        holeDuration = settings.initialHoleDuration;
+        minHoleDelay = settings.initialMinHoleDelay;
+        maxHoleDelay = settings.initialMaxHoleDelay;
     }
 
     public void OnRight(InputAction.CallbackContext value)

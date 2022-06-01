@@ -7,53 +7,30 @@ enum GameState
 {
     ONGOING,
     WON,
-    TIED
+    TIED,
+    ENDED
 }
 
 public class GameManager : MonoBehaviour // TODO: make class singleton
 {
     public GameObject playerPrefab;
-    public GameObject playerParent;
-    public int numberOfPlayers = 1;
+    private GameObject playersParentObject;
+    private Settings settings;
+
+    private bool pressedPause = false;
 
     // true if game is frozen, false if not
     [SerializeField] private bool frozen = true;
 
-    public const int maxPlayers = 6;
+    [SerializeField] private GameState roundState = GameState.ONGOING;
 
-    public string[] names =
-    {
-        "Fred",
-        "Greenlee",
-        "Pinkey",
-        "Bluebell",
-        "Willem",
-        "Greydon"
-    };
+    // list of Players that were instantiated
+    private List<PlayerController> activePlayers;
 
-    // array ordered by player number of their respective colors
-    public Color[] colors = new Color[]
-    {
-            Color.red,
-            Color.green,
-            new Color(1f,0.7f,0.8f),
-            Color.cyan,
-            new Color(1f,0.6f,0f),
-            Color.gray
-    };
+    // current player scores sorted by player number
+    [SerializeField] private int[] scores = {0,0,0,0,0,0};
 
-    // array ordered by player number of their respective control paths
-    public string[][] controlPaths =
-    {
-        new string[] {"<Keyboard>/#(a)", "<Keyboard>/#(s)"},
-        new string[] {"<Keyboard>/LeftArrow", "<Keyboard>/RightArrow"},
-        new string[] {"<Keyboard>/#(,)", "<Keyboard>/#(.)"},
-        new string[] {"<Keyboard>/#(c)", "<Keyboard>/#(v)"},
-        new string[] {"<Keyboard>/#([)", "<Keyboard>/#(])"},
-        new string[] {"<Keyboard>/#(`)", "<Keyboard>/#(1)"},
-    };
-
-    // TODO: make range values depend on borders
+    // TODO: make range values depend on borders ((system might change))
     public float xRange = 40;
     public float yRange = 30;
 
