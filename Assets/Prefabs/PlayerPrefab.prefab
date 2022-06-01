@@ -128,28 +128,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 4422574101359404410}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8140c14d381935b409aaee996e74f54d, type: 3}
+  m_Script: {fileID: 11500000, guid: e45a12134f55ac04887fa11e74c60e36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rightPressed: 0
   leftPressed: 0
   turnDirection: 0
   alive: 1
-  turnSharpness: 2
-  velocityMagnitude: 18
+  turnSharpness: 0
+  velocityMagnitude: 0
   angle: 0
   velocityVector: {x: 0, y: 0}
   direction: {x: 0, y: 0}
-  maxHoleDelay: 6
-  minHoleDelay: 1
-  holeDuration: 0.2
+  maxHoleDelay: 0
+  minHoleDelay: 0
+  holeDuration: 0
   playerName: 
   playerNum: 0
-  trailPiecePrefab: {fileID: 8734439403696564753, guid: 4431d9db410fe1f41b8085b47feb193f, type: 3}
-  body: {fileID: 4422574102261269906}
-  trail: {fileID: 4422574101796285339}
+  trailPiecePrefab: {fileID: 8734439403696564753, guid: fb272c3820834384c837219bedbad1d6, type: 3}
   color: {r: 0, g: 0, b: 0, a: 0}
-  gameManager: {fileID: 0}
 --- !u!114 &4422574101359404415
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162,7 +159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: 44c69c12a65fea2448cf603ce80813de, type: 3}
+  m_Actions: {fileID: -944628639613478452, guid: 47007584b88aab14aab12429ff020c83, type: 3}
   m_NotificationBehavior: 2
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
@@ -387,6 +384,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 4422574102261269906}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2619b0ec991e99242adbabd7e9d217f4, type: 3}
+  m_Script: {fileID: 11500000, guid: e735a3a2bc05e3a499a31d53dd27dba6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

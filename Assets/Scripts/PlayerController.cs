@@ -44,6 +44,9 @@ public class PlayerController : MonoBehaviour
     public string playerName = ""; // needs to be setup in game manager
     public int playerNum; // player number
 
+    [Tooltip("A dictionary that maps names of powerups to the amount of times they are active")]
+    private Dictionary<string, int> activePowerups = new Dictionary<string, int>();
+
     [Space(10)]
 
     [Header("Objects")]
@@ -60,6 +63,8 @@ public class PlayerController : MonoBehaviour
     // refrence to GameManager and Settings
     private GameManager gameManager;
     private Settings settings;
+
+    
 
     // Awake is called when script is initalized
     void Awake()
@@ -84,6 +89,8 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+
+
         // deltaTime is used if fixedupdate doesn't run at the right speed, would make it feel like slowed time.
         // Both with and without are good, what matters is that **both angle and translate depend on deltatime** if any.
 
@@ -103,6 +110,15 @@ public class PlayerController : MonoBehaviour
         holeDuration = settings.initialHoleDuration;
         minHoleDelay = settings.initialMinHoleDelay;
         maxHoleDelay = settings.initialMaxHoleDelay;
+        initializeDictionary();
+    }
+
+    private void initializeDictionary()
+    {
+        foreach (string key in settings.powerups)
+        {
+            activePowerups.Add(key, 0);
+        }
     }
 
     public void OnRight(InputAction.CallbackContext value)
@@ -230,5 +246,28 @@ public class PlayerController : MonoBehaviour
         // rotate and move
         VectorUtilities.rotateObject(body,angle);
         body.transform.position = location;
+    }
+
+   
+
+    public void setHoleDuration(float duration)
+    {
+        holeDuration = duration;
+    }
+
+    public void setVelocityMagnitude(float velocity)
+    {
+        velocityMagnitude = velocity;
+    }
+     
+    // TODO: think about concurency issues in items!
+    public void setActivePowerup(string key, int value)
+    {
+        activePowerups[key] = value;
+    }
+
+    public int getActivePowerup(string key)
+    {
+        return activePowerups[key];
     }
 }

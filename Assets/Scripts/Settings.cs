@@ -43,6 +43,12 @@ public class Settings : MonoBehaviour
         new string[] {"<Keyboard>/#(`)", "<Keyboard>/#(1)"},
     };
 
+    // array of powerup names
+    public string[] powerups =
+    {
+        "speed"
+    };
+
     [Range(1f,50f)] public float initialSpeed = 17f;
     [Range(0.1f,10f)] public float initialTurnSharpness = 2f;
     [Range(0.05f,5f)] public float initialHoleDuration = 0.2f;

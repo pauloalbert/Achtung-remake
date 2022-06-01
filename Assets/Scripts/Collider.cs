@@ -41,9 +41,10 @@ public class Collider : MonoBehaviour
                 break;
                 case "Powerup":
                 {
-
+                        //TODO
                 }
                 break;
+                
             }
         }
     }
