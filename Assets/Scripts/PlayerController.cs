@@ -23,6 +23,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float turnSharpness;
     [SerializeField] private float velocityMagnitude;
 
+    
+
     [Tooltip("The angle the player is pointing to in radians.")]
     [SerializeField] private float angle;
 
@@ -95,6 +97,7 @@ public class PlayerController : MonoBehaviour
         // Both with and without are good, what matters is that **both angle and translate depend on deltatime** if any.
 
         if(alive && !gameManager.isFrozen()){
+            calculatePowerups();
             calculateValues();
             updateTrailTimer();
             Move();
@@ -119,6 +122,29 @@ public class PlayerController : MonoBehaviour
         {
             activePowerups.Add(key, 0);
         }
+    }
+
+    private void calculatePowerups()
+    {
+        speedMode(activePowerups["speed"]);
+
+    }
+
+    private void speedMode(int count)
+    {
+        
+        if (count == 0)
+        {
+            velocityMagnitude = settings.initialSpeed;
+            holeDuration = settings.initialHoleDuration;
+        }
+        else
+        {
+            int effCount = count + 1;
+            velocityMagnitude = settings.initialSpeed * effCount;
+            holeDuration = settings.initialHoleDuration / (float)effCount;
+        }
+        
     }
 
     public void OnRight(InputAction.CallbackContext value)
@@ -255,10 +281,16 @@ public class PlayerController : MonoBehaviour
         holeDuration = duration;
     }
 
+    public float getVelocityMagnitude()
+    {
+        return velocityMagnitude;
+    }
+
     public void setVelocityMagnitude(float velocity)
     {
         velocityMagnitude = velocity;
     }
+
      
     // TODO: think about concurency issues in items!
     public void setActivePowerup(string key, int value)
@@ -269,5 +301,11 @@ public class PlayerController : MonoBehaviour
     public int getActivePowerup(string key)
     {
         return activePowerups[key];
+    }
+
+    // adds count to the value of key in the dictionary
+    public void addToPowerupCount(string key, int count)
+    {
+        activePowerups[key] = activePowerups[key] + count;
     }
 }
