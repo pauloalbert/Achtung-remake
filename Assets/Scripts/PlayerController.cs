@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool rightPressed;
     [SerializeField] private bool leftPressed;
 
+
+
     [Space(10)]
 
     [Header("Player Values")]
@@ -23,7 +25,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float turnSharpness;
     [SerializeField] private float velocityMagnitude;
 
-    
 
     [Tooltip("The angle the player is pointing to in radians.")]
     [SerializeField] private float angle;
@@ -62,9 +63,9 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Player's trail object.")]
     private GameObject trail;
     [Tooltip("Player's trail color.")]
-    public Color color;
+    public Color color = Color.white;
 
-    // refrence to GameManager and Settings
+    // refrences to GameManager and Settings
     private GameManager gameManager;
     private Settings settings;
 
@@ -73,6 +74,7 @@ public class PlayerController : MonoBehaviour
     // Awake is called when script is initalized
     void Awake()
     {
+        // find game objects
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         settings = settings = GameObject.Find("Settings").GetComponent<Settings>();
         body = gameObject.transform.Find("Body").gameObject;
@@ -93,14 +95,12 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-
-
         // deltaTime is used if fixedupdate doesn't run at the right speed, would make it feel like slowed time.
         // Both with and without are good, what matters is that **both angle and translate depend on deltatime** if any.
 
         if(alive && !gameManager.isFrozen()){
-            calculatePowerups();
             calculateValues();
+            calculatePowerups();
             updateTrailTimer();
             Move();
         }
@@ -165,11 +165,13 @@ public class PlayerController : MonoBehaviour
         
     }
 
+    // on press right
     public void OnRight(InputAction.CallbackContext value)
     {
         rightPressed = value.ReadValueAsButton();
     }
 
+    // on press left
     public void OnLeft(InputAction.CallbackContext value)
     {
         leftPressed = value.ReadValueAsButton();
@@ -185,10 +187,10 @@ public class PlayerController : MonoBehaviour
     {
         // calculate angle
         angle += turnDirection * turnSharpness * Time.deltaTime;
-        angle = VectorUtilities.clampAngle(angle);
+        angle = Utilities.clampAngle(angle);
 
         // calculate vectors
-        velocityVector = VectorUtilities.CreatePolar(velocityMagnitude * Time.deltaTime, angle);
+        velocityVector = Utilities.CreatePolar(velocityMagnitude * Time.deltaTime, angle);
         direction = velocityVector.normalized;
 
     }
@@ -198,7 +200,7 @@ public class PlayerController : MonoBehaviour
     {
         body.transform.position += new Vector3(velocityVector.x,velocityVector.y,0); // move body
 
-        VectorUtilities.rotateObject(body,angle); // rotate body to looking angle
+        Utilities.rotateObject(body,angle); // rotate body to looking angle
 
         spawnTrail(); // create trail
     }
@@ -222,8 +224,7 @@ public class PlayerController : MonoBehaviour
         return alive;
     }
 
-    // TODO: worry about this showing up on screen?
-    // spawnTrail takes in a direction d and angle a. instatiates trailPiece in the location
+    // spawnTrail instatiates trailPiece in the location:
     // 1 quarter of the radius of player to the opposite direction from the movement and
     // matches the size according to the radius of player
     public void spawnTrail()
@@ -235,7 +236,7 @@ public class PlayerController : MonoBehaviour
             float radius = body.transform.localScale.x;
             trailPiece.transform.position = body.transform.position - 0.25f * radius * d3; // move piece
             trailPiece.transform.localScale = new Vector3(radius, radius / 2, 0); // scale piece
-            VectorUtilities.rotateObject(trailPiece, angle); // rotate piece
+            Utilities.rotateObject(trailPiece, angle); // rotate piece
             trailPiece.GetComponent<SpriteRenderer>().color = color; // set color
         }
         else return;
@@ -273,10 +274,7 @@ public class PlayerController : MonoBehaviour
     // Delete player trail
     public void deleteTrail()
     {
-        foreach (Transform child in trail.transform)
-        {
-            Destroy(child.gameObject);
-        }
+        Utilities.deleteAllChildren(trail);
     }
 
     // Rotates and moves player to a random area in the map range
@@ -288,7 +286,7 @@ public class PlayerController : MonoBehaviour
         float y = Random.Range(-gameManager.yRange, gameManager.yRange);
         Vector3 location = new Vector3(x,y,0);
         // rotate and move
-        VectorUtilities.rotateObject(body,angle);
+        Utilities.rotateObject(body,angle);
         body.transform.position = location;
     }
 

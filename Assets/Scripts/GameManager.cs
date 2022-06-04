@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
     private List<PlayerController> activePlayers;
 
     // current player scores sorted by player number
-    [SerializeField] private int[] scores = {0,0,0,0,0,0};
+    [SerializeField] private List<int> scores;
 
     // TODO: make range values depend on borders ((system might change))
     public float xRange = 40;
@@ -36,6 +36,9 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
 
     void Awake()
     {
+        scores = new List<int>();
+        activePlayers = new List<PlayerController>();
+
         playersParentObject = GameObject.Find("Players");
         settings = GameObject.Find("Settings").GetComponent<Settings>();
     }
@@ -43,7 +46,7 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
     void Start()
     {
         settings.initUsedPowerups();
-        scatterPlayers();
+        newGame();
     }
 
     void FixedUpdate()
@@ -88,12 +91,40 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
             case GameState.TIED:
             {
                 roundState = GameState.ENDED;
-                    freeze();
+                freeze();
 
-                    Debug.Log("Tied");
+                Debug.Log("Tied");
             }
             break;
         }
+    }
+
+
+    // Starts a new game
+    public void newGame()
+    {
+        // if players exist, delete them
+        Utilities.deleteAllChildren(playersParentObject);
+
+        createPlayers();
+
+        // initialize scores list
+        scores.Clear();
+        for(int i=0; i < settings.numberOfPlayers; i++) scores.Add(0);
+
+        // start first round
+        nextRound();
+    }
+
+    // Revives players and sets new locations to start next round
+    public void nextRound()
+    {
+        freeze();
+        // TODO: reset relevant timers and values
+        roundState = GameState.ONGOING;
+        scatterPlayers();
+        deleteAllTrails();
+        reviveAll();
     }
 
     // getters
@@ -101,7 +132,7 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
     {
         return activePlayers;
     }
-    public int[] getScores()
+    public List<int> getScores()
     {
         return scores;
     }
@@ -109,8 +140,7 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
     // Instantiates players and saves PlayerControllers in activePlayers list
     void createPlayers()
     {
-
-        activePlayers = new List<PlayerController>();
+        activePlayers.Clear();
 
         // Instantiate players
         for(int i=0; i < settings.numberOfPlayers; i++)
@@ -198,22 +228,6 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
         }
     }
 
-    // Revives players and sets new locations 
-    public void nextRound()
-    {
-        freeze();
-        // TODO: reset relevant timers and values
-        roundState = GameState.ONGOING;
-        scatterPlayers();
-        deleteAllTrails();
-        reviveAll();
-    }
-
-    // Starts a new game
-    public void newGame()
-    {
-        // delete players and start over
-    }
 
     // Gets the PlayerController that won the game, does winning stuff
     private void winGame(PlayerController winner)
