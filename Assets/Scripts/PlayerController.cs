@@ -47,7 +47,9 @@ public class PlayerController : MonoBehaviour
     public int playerNum; // player number
 
     [Tooltip("A dictionary that maps names of powerups to the amount of times they are active")]
-    private Dictionary<string, int> activePowerups = new Dictionary<string, int>();
+    private Dictionary<string, List<float>> activePowerups;
+
+
 
     [Space(10)]
 
@@ -118,19 +120,35 @@ public class PlayerController : MonoBehaviour
 
     private void initializeDictionary()
     {
-        foreach (string key in settings.powerups)
+        activePowerups = new Dictionary<string, List<float>>();  
+        foreach (string key in settings.playerPowerups)
         {
-            activePowerups.Add(key, 0);
+            activePowerups.Add(key, new List<float>());
         }
     }
 
     private void calculatePowerups()
     {
-        speedMode(activePowerups["speed"]);
+        foreach(string powerup in settings.playerPowerups)
+        {
+            List<float> timers = activePowerups[powerup];
+
+            // update timers
+            for(int i=0; i < timers.Count; i++){
+                timers[i] -= Time.fixedDeltaTime;
+                if(timers[i] <= 0){
+                    timers.RemoveAt(i);
+                    i--; // objects in front move back
+                }
+            }
+
+            Powerup.applyPowerup(this,powerup,timers.Count);
+        }
 
     }
 
-    private void speedMode(int count)
+    // applies speed effect for current frame count times
+    public void speedEffect(int count)
     {
         
         if (count == 0)
@@ -291,21 +309,9 @@ public class PlayerController : MonoBehaviour
         velocityMagnitude = velocity;
     }
 
-     
-    // TODO: think about concurency issues in items!
-    public void setActivePowerup(string key, int value)
-    {
-        activePowerups[key] = value;
-    }
-
-    public int getActivePowerup(string key)
-    {
-        return activePowerups[key];
-    }
-
     // adds count to the value of key in the dictionary
-    public void addToPowerupCount(string key, int count)
+    public void addPowerupTimer(string key, float count)
     {
-        activePowerups[key] = activePowerups[key] + count;
+        activePowerups[key].Add(count);
     }
 }

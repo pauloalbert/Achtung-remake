@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
 
     void Start()
     {
-        createPlayers();
+        settings.initUsedPowerups();
         scatterPlayers();
     }
 
