@@ -50,6 +50,8 @@ public class PlayerController : MonoBehaviour
     [Tooltip("A dictionary that maps names of powerups to the amount of times they are active")]
     private Dictionary<string, List<float>> activePowerups;
 
+    private Vector3 bodyPosition; // current body position
+    private Vector3 lastBodyPosition; // body position last frame
 
 
     [Space(10)]
@@ -116,6 +118,7 @@ public class PlayerController : MonoBehaviour
         minHoleDelay = settings.initialMinHoleDelay;
         maxHoleDelay = settings.initialMaxHoleDelay;
         initializeDictionary();
+        lastBodyPosition = bodyPosition = body.transform.position;
     }
 
     private void initializeDictionary()
@@ -193,6 +196,10 @@ public class PlayerController : MonoBehaviour
         velocityVector = Utilities.CreatePolar(velocityMagnitude * Time.deltaTime, angle);
         direction = velocityVector.normalized;
 
+        // update body position values
+        lastBodyPosition = bodyPosition;
+        bodyPosition = body.transform.position;
+
     }
 
     // Moves player
@@ -232,10 +239,20 @@ public class PlayerController : MonoBehaviour
         if (isSpawningTrail() && alive)
         {
             GameObject trailPiece = Instantiate(trailPiecePrefab, trail.transform) as GameObject; // create trail piece
+
+            float radius = body.transform.localScale.x; // body radius
+
+            // calculate distance of body from last frame
+            float dis = Utilities.vectorDistance(new Vector2(bodyPosition.x,bodyPosition.y),
+                new Vector2(lastBodyPosition.x,lastBodyPosition.y));
+            dis += 0.1f; // small gap clear
+
             Vector3 d3 = new Vector3(direction.x, direction.y, 0);
-            float radius = body.transform.localScale.x;
-            trailPiece.transform.position = body.transform.position - 0.25f * radius * d3; // move piece
-            trailPiece.transform.localScale = new Vector3(radius, radius / 2, 0); // scale piece
+
+            trailPiece.transform.position = body.transform.position - dis * radius * d3; // move piece
+
+            trailPiece.transform.localScale = new Vector3(radius, dis, 0); // scale piece
+
             Utilities.rotateObject(trailPiece, angle); // rotate piece
             trailPiece.GetComponent<SpriteRenderer>().color = color; // set color
         }

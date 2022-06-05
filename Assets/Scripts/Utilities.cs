@@ -39,4 +39,9 @@ public static class Utilities
             GameObject.Destroy(child.gameObject);
         }
     }
+
+    public static float vectorDistance(Vector2 v, Vector2 w)
+    {
+        return Mathf.Sqrt(Mathf.Pow(v.x-w.x,2)+Mathf.Pow(v.y-w.y,2));
+    }
 }
