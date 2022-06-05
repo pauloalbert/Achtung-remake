@@ -54,26 +54,37 @@ public class Settings : MonoBehaviour // TODO: make class singleton
     [Range(0.3f,4f)] public float initialMinHoleDelay = 1;
     [Range(4f,10f)] public float initialMaxHoleDelay = 6;
 
+    [Range(0.5f,10f)] public float initialMinPowerupTime = 2f;
+    [Range(4f,10f)] public float initialMaxPowerupTime = 5f;
+
     [Space(20)]
 
     [Header("Powerups")]
-
-    public bool speed = true;
-    public bool clearScreen = true;
-
+    
     // list of powerups being used in game
     public List<string> usedPowerups;
     // list of powerups being used in game that should be given to a player
     public List<string> playerPowerups;
 
+    public Dictionary<string,GameObject> PowerupPrefabs;
+
+    public bool speed = true;
+    public bool clearScreen = true;
+
     public void initUsedPowerups()
     {
         usedPowerups = new List<string>();
+        PowerupPrefabs = new Dictionary<string, GameObject>();
+
         if(speed){ 
             usedPowerups.Add("speed");
             playerPowerups.Add("speed");
+            PowerupPrefabs["speed"] = Resources.Load<GameObject>("SpeedPowerupPrefab");
         }
-        if(clearScreen) usedPowerups.Add("clearScreen");
+        if(clearScreen){
+            usedPowerups.Add("clearScreen");
+            PowerupPrefabs["clearScreen"] = Resources.Load<GameObject>("ClearScreenPowerupPrefab");
+        }
     }
 
 }

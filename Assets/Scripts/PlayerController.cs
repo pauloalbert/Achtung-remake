@@ -71,7 +71,7 @@ public class PlayerController : MonoBehaviour
     private GameManager gameManager;
     private Settings settings;
 
-    
+
 
     // Awake is called when script is initalized
     void Awake()
@@ -305,9 +305,20 @@ public class PlayerController : MonoBehaviour
         // rotate and move
         Utilities.rotateObject(body,angle);
         body.transform.position = location;
+
+        lastBodyPosition = bodyPosition = body.transform.position; // update these values
     }
 
-   
+    // resets all timers of the player
+    public void resetTimers()
+    {
+        foreach (string powerup in settings.playerPowerups)
+        {
+            if(activePowerups != null)
+                activePowerups[powerup].Clear();
+        }
+        newHoleDelay();
+    }
 
     public void setHoleDuration(float duration)
     {

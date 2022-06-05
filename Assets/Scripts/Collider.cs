@@ -42,7 +42,7 @@ public class Collider : MonoBehaviour
                 case "Powerup":
                 {
                     other.GetComponent<Powerup>().activate(playerController); // activate powerup
-
+                    
                     Destroy(other.gameObject); // destroy powerup
                 }
                 break;
