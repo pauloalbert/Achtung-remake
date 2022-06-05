@@ -41,10 +41,16 @@ public class Collider : MonoBehaviour
                 break;
                 case "Powerup":
                 {
-
+                    other.GetComponent<Powerup>().activate(playerController); // activate powerup
+                    
+                    Destroy(other.gameObject); // destroy powerup
                 }
                 break;
+                
             }
         }
+
+        
     }
+
 }

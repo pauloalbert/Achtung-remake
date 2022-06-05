@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
 {
     public GameObject playerPrefab;
     private GameObject playersParentObject;
+    private GameObject powerupsParentObject;
     private Settings settings;
 
     private bool pressedPause = false;
@@ -28,72 +29,114 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
     private List<PlayerController> activePlayers;
 
     // current player scores sorted by player number
-    [SerializeField] private int[] scores = {0,0,0,0,0,0};
+    [SerializeField] private List<int> scores;
+
+    private float minPowerupTime;
+    private float maxPowerupTime;
+
+    private float nextPowerupTime; // time to next powerup spawn
 
     // TODO: make range values depend on borders ((system might change))
-    public float xRange = 40;
-    public float yRange = 30;
+    public float xRange = 50;
+    public float yRange = 40;
 
     void Awake()
     {
+        scores = new List<int>();
+        activePlayers = new List<PlayerController>();
+
         playersParentObject = GameObject.Find("Players");
+        powerupsParentObject = GameObject.Find("Powerups");
         settings = GameObject.Find("Settings").GetComponent<Settings>();
     }
 
     void Start()
     {
-        createPlayers();
-        scatterPlayers();
+        settings.initUsedPowerups();
+        minPowerupTime = settings.initialMinPowerupTime;
+        maxPowerupTime = settings.initialMaxPowerupTime;
+        newGame();
     }
 
     void FixedUpdate()
     {   
         switch (roundState)
         {
-            case GameState.ONGOING:
-            {
-                if(pressedPause) {
-                    pressedPause = false;
-                    toggleFreeze();
-                }
-
-                if(!frozen)
-                {
-                    roundState = checkGameState();
-                }
+        case GameState.ONGOING: // Mid round
+        {
+            if(pressedPause) {
+                pressedPause = false; // kind of like on press of button maybe change later
+                toggleFreeze();
             }
-            break;
-            case GameState.ENDED:
-            {
-                if(pressedPause){
-                    pressedPause = false;
-                    nextRound();
-                }
-            }
-            break;
-            case GameState.WON: 
-            {
-                roundState = GameState.ENDED;
-                freeze();
 
-                PlayerController winner = getWinner();
-                Debug.Log(winner.playerName + " Wins!");
-
-                if(scores[winner.playerNum-1] >= settings.goal)
-                {
-                    winGame(winner);
-                }
-            }
-            break;
-            case GameState.TIED:
+            if(!frozen) // game running and not paused
             {
-                roundState = GameState.ENDED;
-                    freeze();
-
-                    Debug.Log("Tied");
+                powerupHandler();
+                roundState = checkGameState();
             }
-            break;
         }
+        break;
+        case GameState.ENDED: // Round ended
+        {
+            if(pressedPause){
+                pressedPause = false;
+                nextRound();
+            }
+        }
+        break;
+        case GameState.WON: // round was won, called once
+        {
+            roundState = GameState.ENDED;
+            freeze();
+
+            PlayerController winner = getWinner();
+            Debug.Log(winner.playerName + " Wins!");
+
+            if(scores[winner.playerNum-1] >= settings.goal)
+            {
+                winGame(winner);
+            }
+        }
+        break;
+        case GameState.TIED: // round was tied, called once
+        {
+            roundState = GameState.ENDED;
+            freeze();
+
+            Debug.Log("Tied");
+        }
+        break;
+        }
+    }
+
+
+    // Starts a new game
+    public void newGame()
+    {
+        // if players exist, delete them
+        Utilities.deleteAllChildren(playersParentObject);
+
+        createPlayers();
+
+        // initialize scores list
+        scores.Clear();
+        for(int i=0; i < settings.numberOfPlayers; i++) scores.Add(0);
+
+        // start first round
+        nextRound();
+    }
+
+    // Revives players and sets new locations to start next round
+    public void nextRound()
+    {
+        freeze();
+        // TODO: reset relevant timers and values
+        roundState = GameState.ONGOING;
+        deleteAllPowerups();
+        deleteAllTrails();
+        removeAllTimers();
+        scatterPlayers();
+        reviveAll();
     }
 
     // getters
@@ -101,7 +144,7 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
     {
         return activePlayers;
     }
-    public int[] getScores()
+    public List<int> getScores()
     {
         return scores;
     }
@@ -109,8 +152,7 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
     // Instantiates players and saves PlayerControllers in activePlayers list
     void createPlayers()
     {
-
-        activePlayers = new List<PlayerController>();
+        activePlayers.Clear();
 
         // Instantiate players
         for(int i=0; i < settings.numberOfPlayers; i++)
@@ -135,6 +177,45 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
         }
     }
 
+    private void createRandomPowerup()
+    {
+        // create random powerup
+        string powerup = settings.usedPowerups[Random.Range(0 , settings.usedPowerups.Count)];
+        GameObject powerupObject = Instantiate(settings.PowerupPrefabs[powerup], powerupsParentObject.transform) as GameObject;
+
+        // choose and set powerup type
+        Powerup power = powerupObject.GetComponent<Powerup>();
+        List<PowerupType> types = power.availableTypes;
+        int typeIndex = Random.Range(0,types.Count);
+        power.setPowerupType(types[typeIndex]);
+        
+
+        // make random location
+        float x = Random.Range(-xRange, xRange);
+        float y = Random.Range(-yRange, yRange);
+        Vector3 location = new Vector3(x,y,0);
+
+        powerupObject.transform.position = location;
+    }
+
+    private void newPowerupTimer()
+    {
+        nextPowerupTime = Random.Range(minPowerupTime, maxPowerupTime);
+    }
+
+    private void powerupHandler()
+    {
+        if(nextPowerupTime <= 0)
+        {
+            newPowerupTimer();
+            createRandomPowerup();
+        }
+        else
+        {
+            nextPowerupTime -= Time.fixedDeltaTime;
+        }
+    }
+
     // randomizes all player locations
     void scatterPlayers()
     {
@@ -153,6 +234,15 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
             case 1: return GameState.WON;
         }
         return GameState.ONGOING;
+    }
+
+    private void removeAllTimers()
+    {
+        foreach (PlayerController player in activePlayers)
+        {
+            player.resetTimers();
+        }
+        newPowerupTimer();
     }
 
     // Returns amount of players alive currently
@@ -198,22 +288,11 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
         }
     }
 
-    // Revives players and sets new locations 
-    public void nextRound()
+    public void deleteAllPowerups()
     {
-        freeze();
-        // TODO: reset relevant timers and values
-        roundState = GameState.ONGOING;
-        scatterPlayers();
-        deleteAllTrails();
-        reviveAll();
+        Utilities.deleteAllChildren(powerupsParentObject);
     }
 
-    // Starts a new game
-    public void newGame()
-    {
-        // delete players and start over
-    }
 
     // Gets the PlayerController that won the game, does winning stuff
     private void winGame(PlayerController winner)

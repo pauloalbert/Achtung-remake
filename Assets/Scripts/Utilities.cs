@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public static class VectorUtilities
+
+public static class Utilities
 {
     // Gets magnitude and angle, returns Vector2 pointing to angle with radius magnitude
     public static Vector2 CreatePolar(float radius, float angle){
@@ -28,5 +29,19 @@ public static class VectorUtilities
     public static void rotateObject(GameObject obj, float deg)
     {
         obj.transform.rotation = Quaternion.Euler(0,0,deg*Mathf.Rad2Deg);
+    }
+
+    // Gets GameObject, deletes all children
+    public static void deleteAllChildren(GameObject obj)
+    {
+        foreach (Transform child in obj.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+    }
+
+    public static float vectorDistance(Vector2 v, Vector2 w)
+    {
+        return Mathf.Sqrt(Mathf.Pow(v.x-w.x,2)+Mathf.Pow(v.y-w.y,2));
     }
 }
