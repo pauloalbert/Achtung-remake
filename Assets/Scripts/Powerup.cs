@@ -19,6 +19,7 @@ public abstract class Powerup : MonoBehaviour
     protected GameManager gameManager;
     protected Settings settings;
 
+    // all possible types the powerup can have
     public List<PowerupType> availableTypes;
 
     // gets PlayerController of the player that activated the powerup, does powerup
@@ -30,9 +31,19 @@ public abstract class Powerup : MonoBehaviour
     {
         switch(powerName)
         {
-            case "speed": player.speedEffect(amount);
-            break;
-            // Add here cases for effect powerups
+            case "speed":
+                player.speedEffect(amount);
+                break;
+            case "reverse":
+                player.reverseEffect(amount);
+                break;
+            case "fat": 
+                player.fatEffect(amount);
+                break;
+            case "invincible":
+                player.invincibleEffect(amount);
+                break;
+                // Add here cases for effect powerups
         }
     }
 
@@ -45,10 +56,10 @@ public abstract class Powerup : MonoBehaviour
     {
         switch(type)
         {
-            case PowerupType.GREEN: return Color.green;
-            case PowerupType.RED: return Color.red;
+            case PowerupType.GREEN: return new Color(0,0.9f,0);
+            case PowerupType.RED: return new Color(0.9f,0,0);
         }
-        return Color.blue;
+        return new Color(0,0,0.9f);
     }
 }
 

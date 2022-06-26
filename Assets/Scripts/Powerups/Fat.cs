@@ -2,12 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Speed : Powerup
+public class Fat : Powerup
 {
-
     void Awake()
     {
-        powerupName = "speed";
+        powerupName = "fat";
 
         availableTypes.Add(PowerupType.GREEN);
         availableTypes.Add(PowerupType.RED);
@@ -21,28 +20,28 @@ public class Speed : Powerup
     {
         gameObject.GetComponent<SpriteRenderer>().color = typeToColor(powerupType);
     }
-    
+
     public override void activate(PlayerController playerController)
     {
+        Debug.Log("activate fat");
         switch (powerupType)
         {
             case PowerupType.GREEN:
-            {
-                playerController.addPowerupTimer(powerupName, duration);
-            }
-            break;
-            case PowerupType.RED:
-            {
-                foreach(PlayerController player in gameManager.getActivePlayers())
                 {
-                    if(player != playerController)
+                    playerController.addPowerupTimer(powerupName, duration);
+                }
+                break;
+            case PowerupType.RED:
+                {
+                    foreach (PlayerController player in gameManager.getActivePlayers())
                     {
-                        player.addPowerupTimer(powerupName, duration);
+                        if (player != playerController)
+                        {
+                            player.addPowerupTimer(powerupName, duration);
+                        }
                     }
                 }
-            }
-            break;
+                break;
         }
     }
-
 }

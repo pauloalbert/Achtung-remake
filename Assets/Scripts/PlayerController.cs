@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
 
     [Tooltip("Value for move direction: 1, 0, -1 for left forward and right respectivley.")]
     [SerializeField] private int turnDirection = 0;
+    [SerializeField] private bool reversedDirection = false;
 
     [Tooltip("true if player is alive, false if dead.")]
     [SerializeField] private bool alive = true;
@@ -67,6 +68,12 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Player's trail color.")]
     public Color color = Color.white;
 
+    [Header("Powerup counters and other variables")]
+    private int speedCount = 0;
+    private int fatCount = 0;
+    private bool invincible = false;
+   
+
     // refrences to GameManager and Settings
     private GameManager gameManager;
     private Settings settings;
@@ -81,6 +88,7 @@ public class PlayerController : MonoBehaviour
         settings = settings = GameObject.Find("Settings").GetComponent<Settings>();
         body = gameObject.transform.Find("Body").gameObject;
         trail = gameObject.transform.Find("Trail").gameObject;
+        transform.Find("Body").transform.localScale = new Vector3(settings.initialSize, settings.initialSize, 0);
     }
 
     // Start is called before the first frame update
@@ -103,6 +111,7 @@ public class PlayerController : MonoBehaviour
         if(alive && !gameManager.isFrozen()){
             calculateValues();
             calculatePowerups();
+            totalPowerupEffect();
             updateTrailTimer();
             Move();
         }
@@ -144,28 +153,113 @@ public class PlayerController : MonoBehaviour
                     i--; // objects in front move back
                 }
             }
-
             Powerup.applyPowerup(this,powerup,timers.Count);
         }
+
+    }
+
+    private float velMultCalculator(int totalVelCount)
+    {
+        if (totalVelCount == 0)
+        {
+            return 1f;
+        }
+        else
+        {
+            return (totalVelCount + 0.5f);
+        }
+    }
+
+
+    private void totalPowerupEffect()
+    {
+        // Adding an if statement for the situation where a field needs to remain unchanged to avoid miscalculations
+        int totalVelCount = speedCount;
+        int totalThickCount = fatCount;
+        float totalVelMult = velMultCalculator(totalVelCount);
+
+        if (totalVelCount == 0)
+        {
+            velocityMagnitude = settings.initialSpeed;
+        }
+        else
+        {
+            velocityMagnitude = (totalVelMult) * settings.initialSpeed;
+        }
+
+        if (fatCount == 0 && speedCount == 0)
+        {
+            holeDuration = settings.initialHoleDuration;
+        }
+        else
+        {
+            //remember add helper function
+            holeDuration = settings.initialHoleDuration * (float)(System.Math.Pow(settings.holeFatMultiplier, fatCount) / totalVelMult);
+        }
+
+
+        if(totalVelCount == 0)
+        {
+            turnSharpness = settings.initialTurnSharpness;
+        }
+        else
+        {
+            turnSharpness = (float) (settings.initialTurnSharpness * ((totalVelMult - 1) * 0.5f + 1));
+        }
+           
+        Debug.Log(holeDuration);
 
     }
 
     // applies speed effect for current frame count times
     public void speedEffect(int count)
     {
-        
+        speedCount = count;  
+    }
+
+    // TODO: change the fattening same way
+    public void fatEffect(int count)
+    {
+        fatCount = count;
         if (count == 0)
         {
-            velocityMagnitude = settings.initialSpeed;
-            holeDuration = settings.initialHoleDuration;
+            transform.Find("Body").transform.localScale = new Vector3(settings.initialSize, settings.initialSize, 0);
         }
         else
         {
-            int effCount = count + 1;
-            velocityMagnitude = settings.initialSpeed * effCount;
-            holeDuration = settings.initialHoleDuration / (float)effCount;
+            float effFatMultiplier = (float)(System.Math.Pow(settings.fatMultiplier, count ));
+            float scale = settings.initialSize * effFatMultiplier;
+            transform.Find("Body").transform.localScale = new Vector3(scale, scale, 0);
         }
-        
+    }
+
+    // applies reverse effect for current frame count times
+    public void reverseEffect(int count)
+    {
+        if (count > 0)
+        {
+            // reverse direction
+            reversedDirection = true;
+            // set body color to blue
+            body.GetComponent<SpriteRenderer>().color = new Color(0,0,0.9f);
+        }
+        else
+        {
+            reversedDirection = false;
+            body.GetComponent<SpriteRenderer>().color = new Color(0.9f,1f,0);
+        }
+    }
+
+    public void invincibleEffect(int count)
+    {
+        if (count == 0)
+        {
+            invincible = false;
+        }
+        else
+        {
+            invincible = true;
+        }
     }
 
     // on press right
@@ -183,6 +277,7 @@ public class PlayerController : MonoBehaviour
     private void getInput()
     {
         turnDirection = (leftPressed ? 1 : 0) - (rightPressed ? 1 : 0);
+        if(reversedDirection) turnDirection *= -1;
     }
 
     //TODO: rename?
@@ -245,11 +340,12 @@ public class PlayerController : MonoBehaviour
             // calculate distance of body from last frame
             float dis = Utilities.vectorDistance(new Vector2(bodyPosition.x,bodyPosition.y),
                 new Vector2(lastBodyPosition.x,lastBodyPosition.y));
-            dis += 0.1f; // small gap clear
+
+            dis *= 2.3f; // small gap clear
 
             Vector3 d3 = new Vector3(direction.x, direction.y, 0);
 
-            trailPiece.transform.position = body.transform.position - dis * radius * d3; // move piece
+            trailPiece.transform.position = body.transform.position - 0.5f * dis * d3; // move piece
 
             trailPiece.transform.localScale = new Vector3(radius, dis, 0); // scale piece
 
@@ -280,7 +376,7 @@ public class PlayerController : MonoBehaviour
     // returns true if currently need to spawn trail false otherwise
     public bool isSpawningTrail()
     {
-        if (holeTimer > nextHoleDelay && holeTimer < nextHoleDelay + holeDuration)
+        if ((holeTimer > nextHoleDelay && holeTimer < nextHoleDelay + holeDuration) || invincible)
         {
             return false;
         }
@@ -314,6 +410,7 @@ public class PlayerController : MonoBehaviour
     {
         foreach (string powerup in settings.playerPowerups)
         {
+            Debug.Log(powerup);
             if(activePowerups != null)
                 activePowerups[powerup].Clear();
         }
