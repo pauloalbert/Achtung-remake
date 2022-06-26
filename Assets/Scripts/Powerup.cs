@@ -19,6 +19,7 @@ public abstract class Powerup : MonoBehaviour
     protected GameManager gameManager;
     protected Settings settings;
 
+    // all possible types the powerup can have
     public List<PowerupType> availableTypes;
 
     // gets PlayerController of the player that activated the powerup, does powerup
@@ -33,6 +34,10 @@ public abstract class Powerup : MonoBehaviour
             case "speed": player.speedEffect(amount);
             break;
             // Add here cases for effect powerups
+                break;
+            case "fat": 
+                player.fatEffect(amount);
+                break;
         }
     }
 

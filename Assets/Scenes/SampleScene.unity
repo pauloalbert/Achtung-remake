@@ -1483,6 +1483,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   numberOfPlayers: 3
+  numberOfPlayers: 2
   goal: 10
   names:
   - Fred
@@ -1498,17 +1499,22 @@ MonoBehaviour:
   - {r: 0, g: 1, b: 1, a: 1}
   - {r: 1, g: 0.6, b: 0, a: 1}
   - {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  initialSize: 1.3
+  holeFatMultiplier: 1.4
   initialSpeed: 17
   initialTurnSharpness: 2
+  initialTurnSharpness: 2.5
   initialHoleDuration: 0.2
   initialMinHoleDelay: 1
   initialMaxHoleDelay: 6
+  initialMaxHoleDelay: 4
   initialMinPowerupTime: 2
   initialMaxPowerupTime: 5
   usedPowerups: []
   playerPowerups: []
   speed: 1
   clearScreen: 1
+  fat: 1
 --- !u!4 &1898533545
 Transform:
   m_ObjectHideFlags: 0

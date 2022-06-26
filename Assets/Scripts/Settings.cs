@@ -48,11 +48,15 @@ public class Settings : MonoBehaviour // TODO: make class singleton
         new string[] {"<Keyboard>/#(`)", "<Keyboard>/#(1)"}
     };
 
+    [Range(0.2f, 5f)] public float initialSize = 1f;
+    [Range(0.2f, 5f)] public float fatMultiplier = 2.5f;
+    [Range(1f, 5f)] public float holeFatMultiplier = 1.2f;
     [Range(1f,50f)] public float initialSpeed = 17f;
     [Range(0.1f,10f)] public float initialTurnSharpness = 2f;
     [Range(0.05f,5f)] public float initialHoleDuration = 0.2f;
     [Range(0.3f,4f)] public float initialMinHoleDelay = 1;
     [Range(4f,10f)] public float initialMaxHoleDelay = 6;
+
 
     [Range(0.5f,10f)] public float initialMinPowerupTime = 2f;
     [Range(4f,10f)] public float initialMaxPowerupTime = 5f;
@@ -68,8 +72,12 @@ public class Settings : MonoBehaviour // TODO: make class singleton
 
     public Dictionary<string,GameObject> PowerupPrefabs;
 
+    
     public bool speed = true;
+
     public bool clearScreen = true;
+
+    public bool fat = true;
 
     public void initUsedPowerups()
     {
@@ -84,6 +92,13 @@ public class Settings : MonoBehaviour // TODO: make class singleton
         if(clearScreen){
             usedPowerups.Add("clearScreen");
             PowerupPrefabs["clearScreen"] = Resources.Load<GameObject>("ClearScreenPowerupPrefab");
+        }
+        if(fat)
+        {
+            usedPowerups.Add("fat");
+            playerPowerups.Add("fat");
+            PowerupPrefabs["fat"] = Resources.Load<GameObject>("FatPowerupPrefab");
+
         }
     }
 
