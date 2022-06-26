@@ -24,7 +24,7 @@ public class Speed : Powerup
     
     public override void activate(PlayerController playerController)
     {
-        switch(powerupType)
+        switch (powerupType)
         {
             case PowerupType.GREEN:
             {

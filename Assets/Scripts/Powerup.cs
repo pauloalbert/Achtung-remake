@@ -32,12 +32,14 @@ public abstract class Powerup : MonoBehaviour
         switch(powerName)
         {
             case "speed": player.speedEffect(amount);
-            break;
-            // Add here cases for effect powerups
                 break;
             case "fat": 
                 player.fatEffect(amount);
                 break;
+            case "invincible":
+                player.invincibleEffect(amount);
+                break;
+                // Add here cases for effect powerups
         }
     }
 

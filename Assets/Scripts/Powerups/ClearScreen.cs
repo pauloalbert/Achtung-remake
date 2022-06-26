@@ -15,6 +15,7 @@ public class ClearScreen : Powerup
         // get game manager
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
+
     public override void activate(PlayerController playerController)
     {
         gameManager.deleteAllTrails();

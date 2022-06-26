@@ -79,6 +79,8 @@ public class Settings : MonoBehaviour // TODO: make class singleton
 
     public bool fat = true;
 
+    public bool invincibleActive = true;
+
     public void initUsedPowerups()
     {
         usedPowerups = new List<string>();
@@ -98,6 +100,13 @@ public class Settings : MonoBehaviour // TODO: make class singleton
             usedPowerups.Add("fat");
             playerPowerups.Add("fat");
             PowerupPrefabs["fat"] = Resources.Load<GameObject>("FatPowerupPrefab");
+
+        }
+        if (invincibleActive)
+        {
+            usedPowerups.Add("invincible");
+            playerPowerups.Add("invincible");
+            PowerupPrefabs["invincible"] = Resources.Load<GameObject>("InvinciblePowerupPrefab");
 
         }
     }
