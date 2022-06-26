@@ -6,23 +6,23 @@ public class Template : Powerup
 {
 
     /*
-        Powerup tutorial:
+      Powerup tutorial:
 
-        first create a prefab from the template prefab and add script to it,.
-        then add powerup name to usedPowerups list in settings, if the player
-        behaviour is affected by the powerup add it to playerPowerups list aswell.
-        lastly add prefab to PowerupPrefabs dictionary in settings with the key
-        being the powerup name.
+      first create a prefab from the template prefab and add script to it.
+      then add the powerup name to usedPowerups list in settings, and if the player
+      behaviour is affected by the powerup add it to playerPowerups list aswell.
+      lastly add the prefab to PowerupPrefabs dictionary in settings with the key
+      being the powerup name.
 
-        in Awake() set the powerup name and add to the availableTypes list the types
-        that the powerup can get spawned with. ------------ can also be set in prefab
-        editor but git resets it for now :|
+      in the powerup script added to the prefab, in Awake() set the powerup name and add to the availableTypes list the types
+      that the powerup can get spawned with. ------------ can also be set in prefab
+      editor but git resets it for now :|
 
-        in Start() set the object color to be the game type color.
+      in Start() set the object color to be the game type color.
 
-        in Activate() (called once when powerup is taken) do what the powerup does.
+      in Activate() (called once when powerup is taken) do what the powerup does. This might mean adding a function in playerConroller script.
 
-    */
+  */
 
 
     void Awake()
