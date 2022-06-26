@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
 
     [Tooltip("Value for move direction: 1, 0, -1 for left forward and right respectivley.")]
     [SerializeField] private int turnDirection = 0;
+    [SerializeField] private bool reversedDirection = false;
 
     [Tooltip("true if player is alive, false if dead.")]
     [SerializeField] private bool alive = true;
@@ -161,9 +162,27 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            int effCount = count + 1;
-            velocityMagnitude = settings.initialSpeed * effCount;
-            holeDuration = settings.initialHoleDuration / (float)effCount;
+            float effCount = count + 0.5f;
+            velocityMagnitude = settings.initialSpeed * (effCount);
+            holeDuration = settings.initialHoleDuration / effCount;
+        }
+        
+    }
+
+    // applies reverse effect for current frame count times
+    public void reverseEffect(int count)
+    {
+        if (count > 0)
+        {
+            // reverse direction
+            reversedDirection = true;
+            // set body color to blue
+            body.GetComponent<SpriteRenderer>().color = new Color(0,0,0.9f);
+        }
+        else
+        {
+            reversedDirection = false;
+            body.GetComponent<SpriteRenderer>().color = new Color(0.9f,1f,0);
         }
         
     }
@@ -183,6 +202,7 @@ public class PlayerController : MonoBehaviour
     private void getInput()
     {
         turnDirection = (leftPressed ? 1 : 0) - (rightPressed ? 1 : 0);
+        if(reversedDirection) turnDirection *= -1;
     }
 
     //TODO: rename?

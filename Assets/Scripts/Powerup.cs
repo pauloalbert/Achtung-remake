@@ -32,6 +32,8 @@ public abstract class Powerup : MonoBehaviour
         {
             case "speed": player.speedEffect(amount);
             break;
+            case "reverse": player.reverseEffect(amount);
+            break;
             // Add here cases for effect powerups
         }
     }
@@ -45,10 +47,10 @@ public abstract class Powerup : MonoBehaviour
     {
         switch(type)
         {
-            case PowerupType.GREEN: return Color.green;
-            case PowerupType.RED: return Color.red;
+            case PowerupType.GREEN: return new Color(0,0.9f,0);
+            case PowerupType.RED: return new Color(0.9f,0,0);
         }
-        return Color.blue;
+        return new Color(0,0,0.9f);
     }
 }
 

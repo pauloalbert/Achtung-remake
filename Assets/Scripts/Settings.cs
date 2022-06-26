@@ -68,22 +68,28 @@ public class Settings : MonoBehaviour // TODO: make class singleton
 
     public Dictionary<string,GameObject> PowerupPrefabs;
 
-    public bool speed = true;
-    public bool clearScreen = true;
+    public bool speedActive = true;
+    public bool clearScreenActive = true;
+    public bool reverseActive = true;
 
     public void initUsedPowerups()
     {
         usedPowerups = new List<string>();
         PowerupPrefabs = new Dictionary<string, GameObject>();
 
-        if(speed){ 
+        if(speedActive){ 
             usedPowerups.Add("speed");
             playerPowerups.Add("speed");
             PowerupPrefabs["speed"] = Resources.Load<GameObject>("SpeedPowerupPrefab");
         }
-        if(clearScreen){
+        if(clearScreenActive){
             usedPowerups.Add("clearScreen");
             PowerupPrefabs["clearScreen"] = Resources.Load<GameObject>("ClearScreenPowerupPrefab");
+        }
+        if(reverseActive){
+            usedPowerups.Add("reverse");
+            playerPowerups.Add("reverse");
+            PowerupPrefabs["reverse"] = Resources.Load<GameObject>("ReversePowerupPrefab");
         }
     }
 
