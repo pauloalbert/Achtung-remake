@@ -198,8 +198,6 @@ public class PlayerController : MonoBehaviour
         {
             turnSharpness = (float) (Settings.Instance.initialTurnSharpness * ((totalVelMult - 1) * 0.5f + 1));
         }
-           
-        Debug.Log(holeDuration);
 
     }
 
@@ -402,7 +400,6 @@ public class PlayerController : MonoBehaviour
     {
         foreach (string powerup in Settings.Instance.playerPowerups)
         {
-            Debug.Log(powerup);
             if(activePowerups != null)
                 activePowerups[powerup].Clear();
         }
