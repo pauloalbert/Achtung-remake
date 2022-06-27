@@ -1499,8 +1499,6 @@ MonoBehaviour:
   - {r: 1, g: 0.6, b: 0, a: 1}
   - {r: 0.5, g: 0.5, b: 0.5, a: 1}
   initialSize: 1.3
-  fatMultiplier: 2.5
-  holeFatMultiplier: 1.4
   initialSpeed: 17
   initialTurnSharpness: 2.5
   initialHoleDuration: 0.2
@@ -1511,10 +1509,25 @@ MonoBehaviour:
   usedPowerups: []
   playerPowerups: []
   speedActive: 1
-  clearScreen: 1
+  speedDuration: 5
+  speedFrequency: 1
+  speedTimer: 1
+  clearScreenActive: 1
+  clearScreenFrequency: 1
   reverseActive: 1
+  reverseDuration: 5
+  reverseFrequency: 1
+  reverseTimer: 1
   fatActive: 1
+  fatDuration: 5
+  fatFrequency: 1
+  fatTimer: 1
+  fatMultiplier: 2.5
+  holeFatMultiplier: 1.4
   invincibleActive: 1
+  invincibleDuration: 5
+  invincibleFrequency: 1
+  invincibleTimer: 1
 --- !u!4 &1898533545
 Transform:
   m_ObjectHideFlags: 0

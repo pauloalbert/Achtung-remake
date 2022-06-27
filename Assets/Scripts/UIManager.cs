@@ -5,16 +5,12 @@ using TMPro;
 
 public class UIManager : MonoBehaviour
 {
-    public Settings settings;
-    public GameManager gameManager;
     public GameObject canvas;
     public TextMeshProUGUI scoreboard;
     public TextMeshProUGUI goal;
 
     void Awake()
     {
-        settings = GameObject.Find("Settings").GetComponent<Settings>();
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         canvas = GameObject.Find("UICanvas");
         scoreboard = GameObject.Find("Scoreboard").GetComponent<TextMeshProUGUI>();
         goal = GameObject.Find("Goal").GetComponent<TextMeshProUGUI>();
@@ -33,15 +29,15 @@ public class UIManager : MonoBehaviour
     void updateScoreboard() // TODO: sort by score
     {
         string board = "";
-        foreach (PlayerController player in gameManager.getActivePlayers())
+        foreach (PlayerController player in GameManager.Instance.getActivePlayers())
         {
             board += ("<color=#"+ColorUtility.ToHtmlStringRGBA(player.color)+">"
-            +player.name+" "+gameManager.getScores()[player.playerNum-1]+"</color>\n");
+            +player.name+" "+GameManager.Instance.getScores()[player.playerNum-1]+"</color>\n");
         }
         scoreboard.SetText(board);
     }
     void updateGoalText()
     {
-        goal.SetText("Goal\n<size=240%>"+settings.goal);
+        goal.SetText("Goal\n<size=240%>"+Settings.Instance.goal);
     }
 }

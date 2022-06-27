@@ -11,10 +11,6 @@ public class Speed : Powerup
 
         availableTypes.Add(PowerupType.GREEN);
         availableTypes.Add(PowerupType.RED);
-
-        // get settings and game manager
-        settings = GameObject.Find("Settings").GetComponent<Settings>();
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     void Start()
@@ -24,25 +20,7 @@ public class Speed : Powerup
     
     public override void activate(PlayerController playerController)
     {
-        switch (powerupType)
-        {
-            case PowerupType.GREEN:
-            {
-                playerController.addPowerupTimer(powerupName, duration);
-            }
-            break;
-            case PowerupType.RED:
-            {
-                foreach(PlayerController player in gameManager.getActivePlayers())
-                {
-                    if(player != playerController)
-                    {
-                        player.addPowerupTimer(powerupName, duration);
-                    }
-                }
-            }
-            break;
-        }
+        giveEffects(playerController);
     }
-
+    
 }

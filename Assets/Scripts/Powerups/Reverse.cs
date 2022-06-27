@@ -11,10 +11,6 @@ public class Reverse : Powerup
 
         // add available types for powerup
         availableTypes.Add(PowerupType.RED);
-
-        // Get settings and game manager
-        settings = GameObject.Find("Settings").GetComponent<Settings>();
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     void Start()
@@ -25,13 +21,6 @@ public class Reverse : Powerup
     
     public override void activate(PlayerController playerController)
     {
-        // red type
-        foreach(PlayerController player in gameManager.getActivePlayers())
-        {
-            if(player != playerController)
-            {
-                player.addPowerupTimer(powerupName, duration);
-            }
-        }
+        giveEffects(playerController);
     }
 }

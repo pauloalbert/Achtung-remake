@@ -74,21 +74,13 @@ public class PlayerController : MonoBehaviour
     private bool invincible = false;
    
 
-    // refrences to GameManager and Settings
-    private GameManager gameManager;
-    private Settings settings;
-
-
-
     // Awake is called when script is initalized
     void Awake()
     {
         // find game objects
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        settings = settings = GameObject.Find("Settings").GetComponent<Settings>();
         body = gameObject.transform.Find("Body").gameObject;
         trail = gameObject.transform.Find("Trail").gameObject;
-        transform.Find("Body").transform.localScale = new Vector3(settings.initialSize, settings.initialSize, 0);
+        transform.Find("Body").transform.localScale = new Vector3(Settings.Instance.initialSize, Settings.Instance.initialSize, 0);
     }
 
     // Start is called before the first frame update
@@ -108,7 +100,7 @@ public class PlayerController : MonoBehaviour
         // deltaTime is used if fixedupdate doesn't run at the right speed, would make it feel like slowed time.
         // Both with and without are good, what matters is that **both angle and translate depend on deltatime** if any.
 
-        if(alive && !gameManager.isFrozen()){
+        if(alive && !GameManager.Instance.isFrozen()){
             calculateValues();
             calculatePowerups();
             totalPowerupEffect();
@@ -121,11 +113,11 @@ public class PlayerController : MonoBehaviour
     private void setInitialValues()
     {
         newHoleDelay();
-        velocityMagnitude = settings.initialSpeed;
-        turnSharpness = settings.initialTurnSharpness;
-        holeDuration = settings.initialHoleDuration;
-        minHoleDelay = settings.initialMinHoleDelay;
-        maxHoleDelay = settings.initialMaxHoleDelay;
+        velocityMagnitude = Settings.Instance.initialSpeed;
+        turnSharpness = Settings.Instance.initialTurnSharpness;
+        holeDuration = Settings.Instance.initialHoleDuration;
+        minHoleDelay = Settings.Instance.initialMinHoleDelay;
+        maxHoleDelay = Settings.Instance.initialMaxHoleDelay;
         initializeDictionary();
         lastBodyPosition = bodyPosition = body.transform.position;
     }
@@ -133,7 +125,7 @@ public class PlayerController : MonoBehaviour
     private void initializeDictionary()
     {
         activePowerups = new Dictionary<string, List<float>>();  
-        foreach (string key in settings.playerPowerups)
+        foreach (string key in Settings.Instance.playerPowerups)
         {
             activePowerups.Add(key, new List<float>());
         }
@@ -141,7 +133,7 @@ public class PlayerController : MonoBehaviour
 
     private void calculatePowerups()
     {
-        foreach(string powerup in settings.playerPowerups)
+        foreach(string powerup in Settings.Instance.playerPowerups)
         {
             List<float> timers = activePowerups[powerup];
 
@@ -180,34 +172,32 @@ public class PlayerController : MonoBehaviour
 
         if (totalVelCount == 0)
         {
-            velocityMagnitude = settings.initialSpeed;
+            velocityMagnitude = Settings.Instance.initialSpeed;
         }
         else
         {
-            velocityMagnitude = (totalVelMult) * settings.initialSpeed;
+            velocityMagnitude = (totalVelMult) * Settings.Instance.initialSpeed;
         }
 
         if (fatCount == 0 && speedCount == 0)
         {
-            holeDuration = settings.initialHoleDuration;
+            holeDuration = Settings.Instance.initialHoleDuration;
         }
         else
         {
             //remember add helper function
-            holeDuration = settings.initialHoleDuration * (float)(System.Math.Pow(settings.holeFatMultiplier, fatCount) / totalVelMult);
+            holeDuration = Settings.Instance.initialHoleDuration * (float)(System.Math.Pow(Settings.Instance.holeFatMultiplier, fatCount) / totalVelMult);
         }
 
 
         if(totalVelCount == 0)
         {
-            turnSharpness = settings.initialTurnSharpness;
+            turnSharpness = Settings.Instance.initialTurnSharpness;
         }
         else
         {
-            turnSharpness = (float) (settings.initialTurnSharpness * ((totalVelMult - 1) * 0.5f + 1));
+            turnSharpness = (float) (Settings.Instance.initialTurnSharpness * ((totalVelMult - 1) * 0.5f + 1));
         }
-           
-        Debug.Log(holeDuration);
 
     }
 
@@ -223,12 +213,12 @@ public class PlayerController : MonoBehaviour
         fatCount = count;
         if (count == 0)
         {
-            transform.Find("Body").transform.localScale = new Vector3(settings.initialSize, settings.initialSize, 0);
+            transform.Find("Body").transform.localScale = new Vector3(Settings.Instance.initialSize, Settings.Instance.initialSize, 0);
         }
         else
         {
-            float effFatMultiplier = (float)(System.Math.Pow(settings.fatMultiplier, count ));
-            float scale = settings.initialSize * effFatMultiplier;
+            float effFatMultiplier = (float)(System.Math.Pow(Settings.Instance.fatMultiplier, count ));
+            float scale = Settings.Instance.initialSize * effFatMultiplier;
             transform.Find("Body").transform.localScale = new Vector3(scale, scale, 0);
         }
     }
@@ -311,7 +301,7 @@ public class PlayerController : MonoBehaviour
     public void kill()
     {
         alive = false;
-        gameManager.giveAllAlivePoints();
+        GameManager.Instance.giveAllAlivePoints();
     }
 
     // Bring player back to life
@@ -395,8 +385,8 @@ public class PlayerController : MonoBehaviour
     {
         // make random values for starting rotation and position
         angle = Random.Range(0, 2f * Mathf.PI);
-        float x = Random.Range(-gameManager.xRange, gameManager.xRange);
-        float y = Random.Range(-gameManager.yRange, gameManager.yRange);
+        float x = Random.Range(-GameManager.Instance.xRange, GameManager.Instance.xRange);
+        float y = Random.Range(-GameManager.Instance.yRange, GameManager.Instance.yRange);
         Vector3 location = new Vector3(x,y,0);
         // rotate and move
         Utilities.rotateObject(body,angle);
@@ -408,9 +398,8 @@ public class PlayerController : MonoBehaviour
     // resets all timers of the player
     public void resetTimers()
     {
-        foreach (string powerup in settings.playerPowerups)
+        foreach (string powerup in Settings.Instance.playerPowerups)
         {
-            Debug.Log(powerup);
             if(activePowerups != null)
                 activePowerups[powerup].Clear();
         }
