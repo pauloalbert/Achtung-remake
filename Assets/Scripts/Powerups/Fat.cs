@@ -20,25 +20,6 @@ public class Fat : Powerup
 
     public override void activate(PlayerController playerController)
     {
-        Debug.Log("activate fat");
-        switch (powerupType)
-        {
-            case PowerupType.GREEN:
-                {
-                    playerController.addPowerupTimer(powerupName, duration);
-                }
-                break;
-            case PowerupType.RED:
-                {
-                    foreach (PlayerController player in gameManager.getActivePlayers())
-                    {
-                        if (player != playerController)
-                        {
-                            player.addPowerupTimer(powerupName, duration);
-                        }
-                    }
-                }
-                break;
-        }
+        giveEffects(playerController);
     }
 }

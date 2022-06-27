@@ -21,13 +21,6 @@ public class Reverse : Powerup
     
     public override void activate(PlayerController playerController)
     {
-        // red type
-        foreach(PlayerController player in gameManager.getActivePlayers())
-        {
-            if(player != playerController)
-            {
-                player.addPowerupTimer(powerupName, duration);
-            }
-        }
+        giveEffects(playerController);
     }
 }

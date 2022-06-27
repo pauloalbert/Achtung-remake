@@ -22,6 +22,39 @@ public abstract class Powerup : MonoBehaviour
     // gets PlayerController of the player that activated the powerup, does powerup
     public abstract void activate(PlayerController playerController = null);
 
+    // apply powerup on player (according to powerup type)
+    protected void giveEffects(PlayerController playerController)
+    {
+        switch (powerupType)
+        {
+            case PowerupType.GREEN:
+            {
+                playerController.addPowerupTimer(powerupName, duration);
+            }
+            break;
+            case PowerupType.RED:
+            {
+                foreach (PlayerController player in GameManager.Instance.getActivePlayers())
+                {
+                    if (player != playerController)
+                    {
+                        player.addPowerupTimer(powerupName, duration);
+                    }
+                }
+            }
+            break;
+            case PowerupType.BLUE:
+            {
+                foreach (PlayerController player in GameManager.Instance.getActivePlayers())
+                {
+                    player.addPowerupTimer(powerupName, duration);
+                }
+            }
+            break;
+        }
+    }
+
+
     // gets PlayerController of player, powerup name and amount of the powerup the player has,
     // applies the poewrup effect on the player
     public static void applyPowerup(PlayerController player, string powerName, int amount = 0)

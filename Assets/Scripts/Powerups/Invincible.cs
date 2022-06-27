@@ -21,6 +21,6 @@ public class Invincible : Powerup
     
     public override void activate(PlayerController playerController)
     {
-        playerController.addPowerupTimer(powerupName, duration);
+        giveEffects(playerController);
     }
 }
