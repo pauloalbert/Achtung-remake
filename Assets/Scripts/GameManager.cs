@@ -11,12 +11,11 @@ enum GameState
     ENDED
 }
 
-public class GameManager : MonoBehaviour // TODO: make class singleton
+public class GameManager : Singleton<GameManager>
 {
     public GameObject playerPrefab;
     private GameObject playersParentObject;
     private GameObject powerupsParentObject;
-    private Settings settings;
 
     private bool pressedPause = false;
 
@@ -47,14 +46,13 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
 
         playersParentObject = GameObject.Find("Players");
         powerupsParentObject = GameObject.Find("Powerups");
-        settings = GameObject.Find("Settings").GetComponent<Settings>();
     }
 
     void Start()
     {
-        settings.initUsedPowerups();
-        minPowerupTime = settings.initialMinPowerupTime;
-        maxPowerupTime = settings.initialMaxPowerupTime;
+        Settings.Instance.initUsedPowerups();
+        minPowerupTime = Settings.Instance.initialMinPowerupTime;
+        maxPowerupTime = Settings.Instance.initialMaxPowerupTime;
         newGame();
     }
 
@@ -92,7 +90,7 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
             PlayerController winner = getWinner();
             Debug.Log(winner.playerName + " Wins!");
 
-            if(scores[winner.playerNum-1] >= settings.goal)
+            if(scores[winner.playerNum-1] >= Settings.Instance.goal)
             {
                 winGame(winner);
             }
@@ -120,7 +118,7 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
 
         // initialize scores list
         scores.Clear();
-        for(int i=0; i < settings.numberOfPlayers; i++) scores.Add(0);
+        for(int i=0; i < Settings.Instance.numberOfPlayers; i++) scores.Add(0);
 
         // start first round
         nextRound();
@@ -155,7 +153,7 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
         activePlayers.Clear();
 
         // Instantiate players
-        for(int i=0; i < settings.numberOfPlayers; i++)
+        for(int i=0; i < Settings.Instance.numberOfPlayers; i++)
         {
             GameObject playerObject = Instantiate(playerPrefab, playersParentObject.transform) as GameObject;
 
@@ -165,13 +163,13 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
             // Set player number
             playerController.playerNum = i+1;
             // Set name
-            playerObject.name = settings.names[i];
-            playerController.playerName = settings.names[i];
+            playerObject.name = Settings.Instance.names[i];
+            playerController.playerName = Settings.Instance.names[i];
             // Set color
-            playerController.color = settings.colors[i];
+            playerController.color = Settings.Instance.colors[i];
             // Set controls
-            playerInput.actions["Left"].ApplyBindingOverride(settings.controlPaths[i][0]);
-            playerInput.actions["Right"].ApplyBindingOverride(settings.controlPaths[i][1]);
+            playerInput.actions["Left"].ApplyBindingOverride(Settings.Instance.controlPaths[i][0]);
+            playerInput.actions["Right"].ApplyBindingOverride(Settings.Instance.controlPaths[i][1]);
 
             activePlayers.Add(playerController);
         }
@@ -180,8 +178,8 @@ public class GameManager : MonoBehaviour // TODO: make class singleton
     private void createRandomPowerup()
     {
         // create random powerup
-        string powerup = settings.usedPowerups[Random.Range(0 , settings.usedPowerups.Count)];
-        GameObject powerupObject = Instantiate(settings.PowerupPrefabs[powerup], powerupsParentObject.transform) as GameObject;
+        string powerup = Settings.Instance.usedPowerups[Random.Range(0 , Settings.Instance.usedPowerups.Count)];
+        GameObject powerupObject = Instantiate(Settings.Instance.PowerupPrefabs[powerup], powerupsParentObject.transform) as GameObject;
 
         // choose and set powerup type
         Powerup power = powerupObject.GetComponent<Powerup>();

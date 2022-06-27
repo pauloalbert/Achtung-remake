@@ -11,10 +11,6 @@ public class Invincible : Powerup
 
         // add available types for powerup
         availableTypes.Add(PowerupType.GREEN);
-
-        // Get settings and game manager
-        settings = GameObject.Find("Settings").GetComponent<Settings>();
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     void Start()

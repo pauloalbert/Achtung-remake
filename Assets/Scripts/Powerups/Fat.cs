@@ -11,9 +11,6 @@ public class Fat : Powerup
         availableTypes.Add(PowerupType.GREEN);
         availableTypes.Add(PowerupType.RED);
 
-        // get settings and game manager
-        settings = GameObject.Find("Settings").GetComponent<Settings>();
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     void Start()

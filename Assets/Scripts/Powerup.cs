@@ -14,10 +14,7 @@ public abstract class Powerup : MonoBehaviour
 
     [SerializeField] protected PowerupType powerupType = PowerupType.GREEN;
 
-    [SerializeField] protected float duration = 5f;
-
-    protected GameManager gameManager;
-    protected Settings settings;
+    protected float duration = 5f;
 
     // all possible types the powerup can have
     public List<PowerupType> availableTypes;

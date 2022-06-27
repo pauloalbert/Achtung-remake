@@ -11,13 +11,10 @@ public class ClearScreen : Powerup
         powerupName = "clearScreen";
 
         availableTypes.Add(PowerupType.BLUE);
-
-        // get game manager
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     public override void activate(PlayerController playerController)
     {
-        gameManager.deleteAllTrails();
+        GameManager.Instance.deleteAllTrails();
     }
 }

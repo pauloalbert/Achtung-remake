@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Settings : MonoBehaviour // TODO: make class singleton
+public class Settings : Singleton<Settings>
 {
     [Header("Game settings")]
 
