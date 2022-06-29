@@ -72,6 +72,8 @@ public class PlayerController : MonoBehaviour
     private int speedCount = 0;
     private int fatCount = 0;
     private bool invincible = false;
+    [Tooltip("True in the physics frame a fat powerup was picked up")]
+    public bool fatFrame = false;
    
 
     // Awake is called when script is initalized
@@ -325,6 +327,8 @@ public class PlayerController : MonoBehaviour
         {
             GameObject trailPiece = Instantiate(trailPiecePrefab, trail.transform) as GameObject; // create trail piece
 
+            trailPiece.GetComponent<Trail>().playerNum = playerNum;
+
             float radius = body.transform.localScale.x; // body radius
 
             // calculate distance of body from last frame
@@ -426,4 +430,6 @@ public class PlayerController : MonoBehaviour
     {
         activePowerups[key].Add(count);
     }
+
+ 
 }

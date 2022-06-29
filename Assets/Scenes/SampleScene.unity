@@ -510,8 +510,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36768f4ee46e09a40b11ed849d0378c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  settings: {fileID: 0}
-  gameManager: {fileID: 0}
   canvas: {fileID: 0}
   scoreboard: {fileID: 0}
   goal: {fileID: 0}
