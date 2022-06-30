@@ -73,7 +73,7 @@ SpriteRenderer:
   m_SortingLayerID: -89634907
   m_SortingLayer: 1
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 9e77d1488a9ed0640977bf0854664469, type: 3}
+  m_Sprite: {fileID: 21300000, guid: cda82c58a9f80144ba2a6908267818d2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -93,9 +93,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7520219371832758214}
-  - component: {fileID: 4924368617282917915}
   - component: {fileID: 1609097979360278762}
   - component: {fileID: 7520219371832756280}
+  - component: {fileID: 4007765053678046675}
   m_Layer: 0
   m_Name: ReversePowerupPrefab
   m_TagString: Powerup
@@ -119,21 +119,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4924368617282917915
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7520219371832758212}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b770498869f1cb40a12136974c07913, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  powerupType: 1
-  duration: 5
-  availableTypes: 
 --- !u!212 &1609097979360278762
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -202,3 +187,17 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!114 &4007765053678046675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7520219371832758212}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3b2e7f617c73dd43a1082131380a4d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  powerupType: 0
+  availableTypes: 
