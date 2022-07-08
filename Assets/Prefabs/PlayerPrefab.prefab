@@ -136,6 +136,7 @@ MonoBehaviour:
   leftPressed: 0
   playerName: 
   playerNum: 0
+  _holeLength: 0
   trailPiecePrefab: {fileID: 8734439403696564753, guid: 4431d9db410fe1f41b8085b47feb193f, type: 3}
   color: {r: 0, g: 0, b: 0, a: 0}
   _body: {fileID: 4422574102261269906}
@@ -256,10 +257,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4422574102261269908}
+  - component: {fileID: 4422574102261269910}
   - component: {fileID: 4422574102261269907}
   - component: {fileID: 4422574102261269909}
   - component: {fileID: 4422574102261269911}
-  - component: {fileID: 4422574102261269910}
   - component: {fileID: 6647740178700896984}
   m_Layer: 0
   m_Name: Body
@@ -285,6 +286,18 @@ Transform:
   m_Father: {fileID: 4422574101359404414}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4422574102261269910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4422574102261269906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b50ad45ada74ed45bf2bf3ba4adfabc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!212 &4422574102261269907
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -384,18 +397,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.7, y: 0.7}
   m_EdgeRadius: 0
---- !u!114 &4422574102261269910
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4422574102261269906}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2619b0ec991e99242adbabd7e9d217f4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!58 &6647740178700896984
 CircleCollider2D:
   m_ObjectHideFlags: 0
