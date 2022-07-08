@@ -261,8 +261,6 @@ public class PlayerController : MonoBehaviour
             
             trailPiece.GetComponent<Trail>().playerNum = playerNum;
 
-            float radius = body.transform.localScale.x; // body radius
-
             float radius = _body.transform.localScale.x; // body radius
 
             dis *= 2.3f; // small gap clear
