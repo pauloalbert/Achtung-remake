@@ -7,16 +7,7 @@ public class Invincible : Powerup
 
     void Awake()
     {
-        powerupName = "invincible";
-
-        // add available types for powerup
-        availableTypes.Add(PowerupType.GREEN);
-    }
-
-    void Start()
-    {
-        // set sprite color to powerup type
-        gameObject.GetComponent<SpriteRenderer>().color = typeToColor(powerupType);
+        powerupSettings = Settings.Instance.invincibleSettings;
     }
     
     public override void activate(PlayerController playerController)

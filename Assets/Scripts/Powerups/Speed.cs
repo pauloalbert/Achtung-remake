@@ -7,15 +7,7 @@ public class Speed : Powerup
 
     void Awake()
     {
-        powerupName = "speed";
-
-        availableTypes.Add(PowerupType.GREEN);
-        availableTypes.Add(PowerupType.RED);
-    }
-
-    void Start()
-    {
-        gameObject.GetComponent<SpriteRenderer>().color = typeToColor(powerupType);
+        powerupSettings = Settings.Instance.speedSettings;
     }
     
     public override void activate(PlayerController playerController)

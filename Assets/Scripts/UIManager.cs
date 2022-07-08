@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class UIManager : MonoBehaviour
+public class UIManager : Singleton<UIManager>
 {
-    public GameObject canvas;
-    public TextMeshProUGUI scoreboard;
-    public TextMeshProUGUI goal;
+    private GameObject canvas;
+    private TextMeshProUGUI scoreboard;
+    private TextMeshProUGUI goal;
 
     void Awake()
     {

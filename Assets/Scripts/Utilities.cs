@@ -25,8 +25,8 @@ public static class Utilities
         return angle;
     }
 
-    // Gets GameObject and angle in radians, rotates object to given angle
-    public static void rotateObject(GameObject obj, float deg)
+    // Gets GameObject and angle in radians, points object to given angle
+    public static void pointObject(GameObject obj, float deg)
     {
         obj.transform.rotation = Quaternion.Euler(0,0,deg*Mathf.Rad2Deg);
     }

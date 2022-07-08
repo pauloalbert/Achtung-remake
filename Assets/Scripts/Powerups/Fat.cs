@@ -4,18 +4,10 @@ using UnityEngine;
 
 public class Fat : Powerup
 {
+
     void Awake()
     {
-        powerupName = "fat";
-
-        availableTypes.Add(PowerupType.GREEN);
-        availableTypes.Add(PowerupType.RED);
-
-    }
-
-    void Start()
-    {
-        gameObject.GetComponent<SpriteRenderer>().color = typeToColor(powerupType);
+        powerupSettings = Settings.Instance.fatSettings;
     }
 
     public override void activate(PlayerController playerController)

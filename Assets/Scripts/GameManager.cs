@@ -5,30 +5,31 @@ using UnityEngine.InputSystem;
 
 enum GameState
 {
-    ONGOING,
-    WON,
-    TIED,
-    ENDED
+    ONGOING, // mid round
+    WON, // dunno
+    TIED, // dunno 
+    ENDED // dunno
 }
 
 public class GameManager : Singleton<GameManager>
 {
     public GameObject playerPrefab;
-    private GameObject playersParentObject;
-    private GameObject powerupsParentObject;
 
-    private bool pressedPause = false;
+    private GameObject playersParentObject; // object containing all players in game
+    private GameObject powerupsParentObject; // object containing all powerups in the map
 
-    // true if game is frozen, false if not
-    [SerializeField] private bool frozen = true;
+    private bool paused = false;
+    // true if game is frozen, false if not (not sure why i did frozen and paused will change)
+    private bool frozen = true;
 
-    [SerializeField] private GameState roundState = GameState.ONGOING;
+    // Current state of game
+    private GameState roundState = GameState.ONGOING;
 
-    // list of Players that were instantiated
-    private List<PlayerController> activePlayers;
+    // list of instantiated players' playerControllers
+    private List<PlayerController> activePlayers = new List<PlayerController>();
 
     // current player scores sorted by player number
-    [SerializeField] private List<int> scores;
+    private List<int> scores = new List<int>();
 
     private float minPowerupTime;
     private float maxPowerupTime;
@@ -39,17 +40,11 @@ public class GameManager : Singleton<GameManager>
     public float xRange = 50;
     public float yRange = 40;
 
-    void Awake()
-    {
-        scores = new List<int>();
-        activePlayers = new List<PlayerController>();
-
-        playersParentObject = GameObject.Find("Players");
-        powerupsParentObject = GameObject.Find("Powerups");
-    }
-
     void Start()
     {
+        playersParentObject = GameObject.Find("Players");
+        powerupsParentObject = GameObject.Find("Powerups");
+
         Settings.Instance.initUsedPowerups();
         minPowerupTime = Settings.Instance.initialMinPowerupTime;
         maxPowerupTime = Settings.Instance.initialMaxPowerupTime;
@@ -62,8 +57,9 @@ public class GameManager : Singleton<GameManager>
         {
         case GameState.ONGOING: // Mid round
         {
-            if(pressedPause) {
-                pressedPause = false; // kind of like on press of button maybe change later
+            if(paused)
+            {
+                paused = false; // kind of like on press of button maybe change later
                 toggleFreeze();
             }
 
@@ -76,8 +72,8 @@ public class GameManager : Singleton<GameManager>
         break;
         case GameState.ENDED: // Round ended
         {
-            if(pressedPause){
-                pressedPause = false;
+            if(paused){
+                paused = false;
                 nextRound();
             }
         }
@@ -128,13 +124,19 @@ public class GameManager : Singleton<GameManager>
     public void nextRound()
     {
         freeze();
-        // TODO: reset relevant timers and values
-        roundState = GameState.ONGOING;
+
         deleteAllPowerups();
         deleteAllTrails();
         removeAllTimers();
+
         scatterPlayers();
         reviveAll();
+
+        foreach (PlayerController player in activePlayers)
+        {
+            player.setDefaultValues();
+        }
+        roundState = GameState.ONGOING;
     }
 
     // getters
@@ -177,13 +179,15 @@ public class GameManager : Singleton<GameManager>
 
     private void createRandomPowerup()
     {
+        if(Settings.Instance.usedPowerups.Count == 0) return; // no powerups
+
         // create random powerup
-        string powerup = Settings.Instance.usedPowerups[Random.Range(0 , Settings.Instance.usedPowerups.Count)];
+        string powerup = Settings.Instance.usedPowerups[Random.Range(0 , Settings.Instance.usedPowerups.Count)]; // choose powerup
         GameObject powerupObject = Instantiate(Settings.Instance.PowerupPrefabs[powerup], powerupsParentObject.transform) as GameObject;
 
         // choose and set powerup type
         Powerup power = powerupObject.GetComponent<Powerup>();
-        List<PowerupType> types = power.availableTypes;
+        List<PowerupType> types = power.powerupSettings.AvailableTypes;
         int typeIndex = Random.Range(0,types.Count);
         power.setPowerupType(types[typeIndex]);
         
@@ -236,10 +240,6 @@ public class GameManager : Singleton<GameManager>
 
     private void removeAllTimers()
     {
-        foreach (PlayerController player in activePlayers)
-        {
-            player.resetTimers();
-        }
         newPowerupTimer();
     }
 
@@ -325,8 +325,9 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+    // called when pause button is pressed
     public void OnPause(InputAction.CallbackContext value)
     {
-        pressedPause = value.performed;
+        paused = value.performed;
     }
 }
