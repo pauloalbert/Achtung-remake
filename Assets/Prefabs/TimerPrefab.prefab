@@ -28,7 +28,7 @@ RectTransform:
   m_GameObject: {fileID: 1152285558827719543}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2392464227699281967}
@@ -118,7 +118,7 @@ RectTransform:
   m_GameObject: {fileID: 2309541791600771124}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.75, y: 0.75, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7297832407295754777}
@@ -175,7 +175,7 @@ GameObject:
   - component: {fileID: 5560103764804985088}
   - component: {fileID: 5572403729922157814}
   m_Layer: 5
-  m_Name: Timer
+  m_Name: TimerPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -214,6 +214,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90fef5f6a4c2e7b468be4d685732243a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _level: 1
   mask: {fileID: 6288828962152032026}
   maskRectTransform: {fileID: 7297832407295754777}
   imageRectTransform: {fileID: 2392464227699281967}

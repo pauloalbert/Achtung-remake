@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class Settings : Singleton<Settings>
 {
-    [Header("Game Settings")]
+    [Header("=== Game Settings ===")]
     [Space(20)]
 
-    [Min(2)] public int numberOfPlayers = 2;
+    [SerializeField] [Min(2)] public int numberOfPlayers = 2;
 
     // score to reach to win the game
     public int goal = 10;
 
     [Space(20)]
 
-    [Header("Player Settings")]
+    [Header("=== Player Settings ===")]
     [Space(20)]
 
     // array of player names sorted by player number
@@ -52,18 +52,23 @@ public class Settings : Singleton<Settings>
 
     [Range(0.2f, 5f)] public float initialSize = 1f;
     [Range(1f,50f)] public float initialSpeed = 17f;
+
     [Range(0.1f,10f)] public float initialTurnSharpness = 2f;
-    [Range(0.05f,5f)] public float initialHoleDuration = 0.2f;
+    [Range(0,10f)] public float initialHoleLength = 3.5f;
+
     [Range(0.3f,4f)] public float initialMinHoleDelay = 1;
     [Range(4f,10f)] public float initialMaxHoleDelay = 6;
 
     [Space(20)]
 
-    [Header("Powerup Settings")]
+    [Header("=== Powerup Settings ===")]
     [Space(20)]
 
     [Range(0.5f,10f)] public float initialMinPowerupTime = 2f; // min time for powerup to spawn
     [Range(4f,10f)] public float initialMaxPowerupTime = 5f; // max time for powerup to spawn
+
+    [Range(0,1)] public float initialTimerWidth = 0.5f;
+    [Range(0,2)] public float initialTimerOffset = 1;
 
     [Space(10)]
     // list of powerups being used in game
@@ -76,38 +81,38 @@ public class Settings : Singleton<Settings>
     [Space(6)]
     [Header("Speed")]
     public bool speedActive = true;
-    public float speedDuration = 5;
-    public float speedFrequency = 1;
-    public bool speedTimer = true;
+    public PowerupSettings speedSettings = 
+        new PowerupSettings("speed", 5f, 1f, true, new List<PowerupType> {PowerupType.GREEN, PowerupType.RED} );
+    [Range(0.2f, 5f)] public float speedScale = 2.5f;
 
     [Space(6)]
     [Header("Clear Screen")]
     public bool clearScreenActive = true;
-    public float clearScreenFrequency = 1;
+    public PowerupSettings clearScreenSettings = 
+        new PowerupSettings("clearScreen", 0f, 1f, true, new List<PowerupType> {PowerupType.BLUE} );
 
     [Space(6)]
     [Header("Reverse")]
     public bool reverseActive = true;
-    public float reverseDuration = 5;
-    public float reverseFrequency = 1;
-    public bool reverseTimer = true;
+    public PowerupSettings reverseSettings = 
+        new PowerupSettings("reverse", 5f, 1f, true, new List<PowerupType> {PowerupType.RED} );
 
     [Space(6)]
     [Header("Fat")]
     public bool fatActive = true;
-    public float fatDuration = 5;
-    public float fatFrequency = 1;
-    public bool fatTimer = true;
-    [Range(0.2f, 5f)] public float fatMultiplier = 2.5f;
+    public PowerupSettings fatSettings = 
+        new PowerupSettings("fat", 5f, 1f, true, new List<PowerupType> {PowerupType.GREEN, PowerupType.RED} );
+
+    [Range(0.2f, 5f)] public float fatMultiplier = 2f;
     [Range(1f, 5f)] public float holeFatMultiplier = 1.2f;
 
     [Space(6)]
     [Header("Invincible")]
     public bool invincibleActive = true;
-    public float invincibleDuration = 5;
-    public float invincibleFrequency = 1;
-    public bool invincibleTimer = true;
+    public PowerupSettings invincibleSettings = 
+        new PowerupSettings("invincible", 5f, 1f, true, new List<PowerupType> {PowerupType.GREEN} );
 
+        
     public void initUsedPowerups()
     {
         usedPowerups = new List<string>();

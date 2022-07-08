@@ -5,28 +5,90 @@ using UnityEngine;
 public class CircleTimer : MonoBehaviour
 {
 
-    private float duration = 5f;
-    private float timer = 0f;
+    // Values
+    
+    private string _timerName;
 
-    private float timerOffset = 1f; // offset from player body
-    private float timerWidth = 0.5f; // between 0 and 1
+    [SerializeField] private float _duration = 5f; // timer duration
+    [SerializeField] private int _level = 1; // timer level - timer level in timers stack
+    private float _timer = 0; // time since creation
 
-    public UnityEngine.UI.Image mask;
-    public RectTransform maskRectTransform;
-    public RectTransform imageRectTransform;
+    private const float levelGap = 0.7f; // do in settings maybe
 
-    // Update is called once per frame
+    private float maskWidth;
+    private float imageWidth;
+
+    // Public members
+
+    public string TimerName
+    {
+        get => _timerName;
+        set => _timerName = value;
+    }
+    public float Duration
+    {
+        get => _duration;
+        set => _duration = value;
+    }
+    public int Level
+    {
+        get => _level;
+        set => _level = value;
+    }
+
+    // Objects
+
+    [SerializeField] private UnityEngine.UI.Image mask;
+    [SerializeField] private RectTransform maskRectTransform;
+    [SerializeField] private RectTransform imageRectTransform;
+    
+    private Transform body;
+
+    void Start()
+    {
+        body = transform.parent.parent; // player body
+        setSize();
+    }
+
     void FixedUpdate()
     {
-        if(duration - timer <= 0)
+        if(_duration - _timer <= 0)
         {
-            Destroy(gameObject);
+            SendMessageUpwards("DestroyTimer", this);
         }
 
-        maskRectTransform.localScale = new Vector3(1 + timerOffset, 1 + timerOffset, 0);
-        imageRectTransform.localScale = new Vector3(timerWidth/2 + 0.5f, timerWidth/2 + 0.5f, 0);
+        mask.fillAmount = (_duration-_timer) / _duration;
+        if(!GameManager.Instance.isFrozen()) _timer += Time.fixedDeltaTime;
+    }
 
-        mask.fillAmount = (duration-timer) / duration;
-        timer += Time.fixedDeltaTime;
+    // Set timer size
+    public void setSize()
+    {
+        float sizeCorrection = (1 / body.localScale.x);
+        float width = Settings.Instance.initialTimerWidth * sizeCorrection;
+        float offset = Settings.Instance.initialTimerOffset * sizeCorrection;
+        float gap = (levelGap * (_level - 1)) * sizeCorrection;
+
+        imageWidth = 1 + (width * _level) + offset + gap;
+        maskWidth = imageWidth + 1 + (width * (_level - 1)) + gap;
+
+        imageRectTransform.sizeDelta = new Vector2(imageWidth, imageWidth);
+        maskRectTransform.sizeDelta = new Vector2(maskWidth, maskWidth);
+    }
+
+    public void resetTimer()
+    {
+        _timer = 0;
+    }
+
+    public void lowerLevel()
+    {
+        _level -= 1;
+        setSize();
+    }
+
+    public void deleteTimer()
+    {
+        Destroy(gameObject);
     }
 }
