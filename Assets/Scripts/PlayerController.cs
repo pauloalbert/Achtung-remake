@@ -105,7 +105,7 @@ public class PlayerController : MonoBehaviour
     public GameObject _body;
     [Tooltip("Player's trail object.")]
     public GameObject _trail;
-
+    
 
     // Public members
     public GameObject Body
@@ -253,10 +253,15 @@ public class PlayerController : MonoBehaviour
             _nextHoleDelay -= Time.fixedDeltaTime;
         }
 
+
         // Spawn trail piece if not creating hole
         if (isSpawningTrail())
         {
             GameObject trailPiece = Instantiate(trailPiecePrefab, _trail.transform) as GameObject; // create trail piece
+            
+            trailPiece.GetComponent<Trail>().playerNum = playerNum;
+
+            float radius = body.transform.localScale.x; // body radius
 
             float radius = _body.transform.localScale.x; // body radius
 

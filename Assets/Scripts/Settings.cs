@@ -50,7 +50,7 @@ public class Settings : Singleton<Settings>
         new string[] {"<Keyboard>/#(`)", "<Keyboard>/#(1)"}
     };
 
-    [Range(0.2f, 5f)] public float initialSize = 1f;
+    [Range(0.2f, 20f)] public float initialSize = 1f;
     [Range(1f,50f)] public float initialSpeed = 17f;
 
     [Range(0.1f,10f)] public float initialTurnSharpness = 2f;

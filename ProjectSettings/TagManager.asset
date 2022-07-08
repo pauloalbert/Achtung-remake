@@ -9,6 +9,7 @@ TagManager:
   - Powerup
   - player
   - Trail
+  - ActiveTrail
   layers:
   - Default
   - TransparentFX
