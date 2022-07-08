@@ -16,43 +16,81 @@ public class PlayerController : MonoBehaviour
 
     [Header("Player Values")]
 
-    [Tooltip("Value for move direction: 1, 0, -1 for left forward and right respectivley.")]
-    [SerializeField] private int turnDirection = 0;
-    [SerializeField] private bool reversedDirection = false;
+    // ID
+    public string playerName;
+    public int playerNum;
 
-    [Tooltip("true if player is alive, false if dead.")]
-    [SerializeField] private bool alive = true;
+    // Value for move direction: 1, 0, -1 for left forward and right respectivley
+    private int _turnDirection = 0;
+    // true if turnDirection should be reversed
+    private bool _reversedDirection = false;
 
-    [SerializeField] private float turnSharpness;
-    [SerializeField] private float velocityMagnitude;
+    // true if player is alive, false if dead
+    private bool _alive = true;
+    // true if player is invincible
+    private bool _invincible = false;
 
+    // Movement values - affect next move calculations ---------------------------
+    
+    // turn sharpness
+    private float _turnSharpness;
+    // movement speed
+    private float _speed;
 
-    [Tooltip("The angle the player is pointing to in radians.")]
-    [SerializeField] private float angle;
+    // length of player holes
+    [SerializeField] private float _holeLength;
+    // current hole length
+    private float _currentHoleLength;
 
-    [SerializeField] private Vector2 velocityVector;
-    [Tooltip("Normalized Vector2 pointing to player moving direction.")]
-    [SerializeField] private Vector2 direction;
+    // Tuple with range of time in seconds that is selected for nextHoleDelay
+    private (float,float) _holeDelayRange;
+    // After this time passes from last hole a new hole will be made
+    private float _nextHoleDelay;
 
-    [Tooltip("Time from last hole")]
-    private float holeTimer = 0;
-    [Tooltip("after this time passes from last hole a new hole will be made")]
-    private float nextHoleDelay;
-    [Tooltip("When randomizing how much time till the next hole, this is the maximium value it can take")]
-    [SerializeField] private float maxHoleDelay;
-    [Tooltip("When randomizing how much time till the next hole, this is the minimum value it can take")]
-    [SerializeField] private float minHoleDelay;
-    [Tooltip("Time duration of a hole")]
-    [SerializeField] private float holeDuration;
+    // angle that player is looking at
+    private float _angle;
 
-    public string playerName = ""; // needs to be setup in game manager
-    public int playerNum; // player number
+    // Vector2 of location to move player next frame
+    private Vector2 _velocityVector;
+    // Normalized velocityVector
+    private Vector2 _direction;
 
-    [Tooltip("A dictionary that maps names of powerups to the amount of times they are active")]
-    private Dictionary<string, List<float>> activePowerups;
+    // Public members
+    public int TurnDirection
+    {
+        get => _turnDirection;
+    }
+    public bool ReversedDirection
+    {
+        get => _reversedDirection;
+        set => _reversedDirection = value;
+    }
+    public bool Alive
+    {
+        get => _alive;
+        set => _alive = value;
+    }
+    public bool Invincible
+    {
+        get => _invincible;
+        set => _invincible = value;
+    }
+    public float TurnSharpness
+    {
+        get => _turnSharpness;
+        set => _turnSharpness = value;
+    }
+    public float Speed
+    {
+        get => _speed;
+        set => _speed = value;
+    }
+    public float HoleLength
+    {
+        get => _holeLength;
+        set => _holeLength = value;
+    }
 
-    private Vector3 bodyPosition; // current body position
-    private Vector3 lastBodyPosition; // body position last frame
 
 
     [Space(10)]
@@ -61,27 +99,29 @@ public class PlayerController : MonoBehaviour
 
     [Tooltip("Trail piece prefab.")]
     public GameObject trailPiecePrefab;
-    [Tooltip("Player's body object.")]
-    private GameObject body;
-    [Tooltip("Player's trail object.")]
-    private GameObject trail;
     [Tooltip("Player's trail color.")]
     public Color color = Color.white;
+    [Tooltip("Player's body object.")]
+    public GameObject _body;
+    [Tooltip("Player's trail object.")]
+    public GameObject _trail;
 
-    [Header("Powerup counters and other variables")]
-    private int speedCount = 0;
-    private int fatCount = 0;
-    private bool invincible = false;
-   
 
-    // Awake is called when script is initalized
-    void Awake()
+    // Public members
+    public GameObject Body
     {
-        // find game objects
-        body = gameObject.transform.Find("Body").gameObject;
-        trail = gameObject.transform.Find("Trail").gameObject;
-        transform.Find("Body").transform.localScale = new Vector3(Settings.Instance.initialSize, Settings.Instance.initialSize, 0);
+        get => _body;
     }
+
+
+
+    [Space(10)]
+
+    [Header("Sub Behaviours")]
+    public TimerHandler timerHandler;
+    public PowerupHandler powerupHandler;
+
+   
 
     // Start is called before the first frame update
     void Start()
@@ -100,156 +140,33 @@ public class PlayerController : MonoBehaviour
         // deltaTime is used if fixedupdate doesn't run at the right speed, would make it feel like slowed time.
         // Both with and without are good, what matters is that **both angle and translate depend on deltatime** if any.
 
-        if(alive && !GameManager.Instance.isFrozen()){
-            calculateValues();
-            calculatePowerups();
-            totalPowerupEffect();
-            updateTrailTimer();
+        if(_alive && !GameManager.Instance.isFrozen())
+        {
+            powerupHandler.updateValuesFromEffects();
+            calculateMovementValues();
             Move();
         }
     }
 
-    // gets initial values from settings
+
+
+    // sets initial values for player and sets player default values
     private void setInitialValues()
     {
-        newHoleDelay();
-        velocityMagnitude = Settings.Instance.initialSpeed;
-        turnSharpness = Settings.Instance.initialTurnSharpness;
-        holeDuration = Settings.Instance.initialHoleDuration;
-        minHoleDelay = Settings.Instance.initialMinHoleDelay;
-        maxHoleDelay = Settings.Instance.initialMaxHoleDelay;
-        initializeDictionary();
-        lastBodyPosition = bodyPosition = body.transform.position;
+        setDefaultValues();
     }
 
-    private void initializeDictionary()
+    // sets player default values
+    public void setDefaultValues()
     {
-        activePowerups = new Dictionary<string, List<float>>();  
-        foreach (string key in Settings.Instance.playerPowerups)
-        {
-            activePowerups.Add(key, new List<float>());
-        }
-    }
-
-    private void calculatePowerups()
-    {
-        foreach(string powerup in Settings.Instance.playerPowerups)
-        {
-            List<float> timers = activePowerups[powerup];
-
-            // update timers
-            for(int i=0; i < timers.Count; i++){
-                timers[i] -= Time.fixedDeltaTime;
-                if(timers[i] <= 0){
-                    timers.RemoveAt(i);
-                    i--; // objects in front move back
-                }
-            }
-            Powerup.applyPowerup(this,powerup,timers.Count);
-        }
-
-    }
-
-    private float velMultCalculator(int totalVelCount)
-    {
-        if (totalVelCount == 0)
-        {
-            return 1f;
-        }
-        else
-        {
-            return (totalVelCount + 0.5f);
-        }
-    }
-
-
-    private void totalPowerupEffect()
-    {
-        // Adding an if statement for the situation where a field needs to remain unchanged to avoid miscalculations
-        int totalVelCount = speedCount;
-        int totalThickCount = fatCount;
-        float totalVelMult = velMultCalculator(totalVelCount);
-
-        if (totalVelCount == 0)
-        {
-            velocityMagnitude = Settings.Instance.initialSpeed;
-        }
-        else
-        {
-            velocityMagnitude = (totalVelMult) * Settings.Instance.initialSpeed;
-        }
-
-        if (fatCount == 0 && speedCount == 0)
-        {
-            holeDuration = Settings.Instance.initialHoleDuration;
-        }
-        else
-        {
-            //remember add helper function
-            holeDuration = Settings.Instance.initialHoleDuration * (float)(System.Math.Pow(Settings.Instance.holeFatMultiplier, fatCount) / totalVelMult);
-        }
-
-
-        if(totalVelCount == 0)
-        {
-            turnSharpness = Settings.Instance.initialTurnSharpness;
-        }
-        else
-        {
-            turnSharpness = (float) (Settings.Instance.initialTurnSharpness * ((totalVelMult - 1) * 0.5f + 1));
-        }
-
-    }
-
-    // applies speed effect for current frame count times
-    public void speedEffect(int count)
-    {
-        speedCount = count;  
-    }
-
-    // TODO: change the fattening same way
-    public void fatEffect(int count)
-    {
-        fatCount = count;
-        if (count == 0)
-        {
-            transform.Find("Body").transform.localScale = new Vector3(Settings.Instance.initialSize, Settings.Instance.initialSize, 0);
-        }
-        else
-        {
-            float effFatMultiplier = (float)(System.Math.Pow(Settings.Instance.fatMultiplier, count ));
-            float scale = Settings.Instance.initialSize * effFatMultiplier;
-            transform.Find("Body").transform.localScale = new Vector3(scale, scale, 0);
-        }
-    }
-
-    // applies reverse effect for current frame count times
-    public void reverseEffect(int count)
-    {
-        if (count > 0)
-        {
-            // reverse direction
-            reversedDirection = true;
-            // set body color to blue
-            body.GetComponent<SpriteRenderer>().color = new Color(0,0,0.9f);
-        }
-        else
-        {
-            reversedDirection = false;
-            body.GetComponent<SpriteRenderer>().color = new Color(0.9f,1f,0);
-        }
-    }
-
-    public void invincibleEffect(int count)
-    {
-        if (count == 0)
-        {
-            invincible = false;
-        }
-        else
-        {
-            invincible = true;
-        }
+        powerupHandler.clearEffects();
+        _body.GetComponent<SpriteRenderer>().color = Color.yellow;                                                 // body color
+        _body.transform.localScale = new Vector3(Settings.Instance.initialSize, Settings.Instance.initialSize, 0); // size
+        _speed = Settings.Instance.initialSpeed;                                                                   // speed
+        _turnSharpness = Settings.Instance.initialTurnSharpness;                                                   // turn sharpness
+        _holeLength = Settings.Instance.initialHoleLength;                                                         // hole length
+        _holeDelayRange = (Settings.Instance.initialMinHoleDelay, Settings.Instance.initialMaxHoleDelay);          // hole delay range
+        resetTimers();
     }
 
     // on press right
@@ -257,7 +174,6 @@ public class PlayerController : MonoBehaviour
     {
         rightPressed = value.ReadValueAsButton();
     }
-
     // on press left
     public void OnLeft(InputAction.CallbackContext value)
     {
@@ -266,33 +182,28 @@ public class PlayerController : MonoBehaviour
 
     private void getInput()
     {
-        turnDirection = (leftPressed ? 1 : 0) - (rightPressed ? 1 : 0);
-        if(reversedDirection) turnDirection *= -1;
+        _turnDirection = (leftPressed ? 1 : 0) - (rightPressed ? 1 : 0);
+        if(_reversedDirection) _turnDirection *= -1;
     }
 
-    //TODO: rename?
-    private void calculateValues()
+    // updates movement values according to current speed, intput etc.
+    private void calculateMovementValues()
     {
         // calculate angle
-        angle += turnDirection * turnSharpness * Time.deltaTime;
-        angle = Utilities.clampAngle(angle);
+        _angle += _turnDirection * _turnSharpness * Time.deltaTime;
+        _angle = Utilities.clampAngle(_angle);
 
         // calculate vectors
-        velocityVector = Utilities.CreatePolar(velocityMagnitude * Time.deltaTime, angle);
-        direction = velocityVector.normalized;
-
-        // update body position values
-        lastBodyPosition = bodyPosition;
-        bodyPosition = body.transform.position;
-
+        _velocityVector = Utilities.CreatePolar(_speed * Time.deltaTime, _angle);
+        _direction = _velocityVector.normalized;
     }
 
     // Moves player
     private void Move()
     {
-        body.transform.position += new Vector3(velocityVector.x,velocityVector.y,0); // move body
+        _body.transform.position += new Vector3(_velocityVector.x,_velocityVector.y,0); // move body
 
-        Utilities.rotateObject(body,angle); // rotate body to looking angle
+        Utilities.pointObject(_body,_angle); // rotate body to looking angle
 
         spawnTrail(); // create trail
     }
@@ -300,130 +211,110 @@ public class PlayerController : MonoBehaviour
     // Kills the player (add necessary stuff later)
     public void kill()
     {
-        alive = false;
+        _alive = false;
         GameManager.Instance.giveAllAlivePoints();
     }
 
     // Bring player back to life
     public void revive()
     {
-        alive = true;
+        _alive = true;
     }
 
     // getter for alive value
     public bool isAlive()
     {
-        return alive;
+        return _alive;
     }
 
     // spawnTrail instatiates trailPiece in the location:
     // 1 quarter of the radius of player to the opposite direction from the movement and
     // matches the size according to the radius of player
     public void spawnTrail()
-    {
-        if (isSpawningTrail() && alive)
+    {   
+        // calculate distance of body from last frame
+            float dis = _velocityVector.magnitude;
+        
+        // update hole timer
+        if (_nextHoleDelay <= 0)
         {
-            GameObject trailPiece = Instantiate(trailPiecePrefab, trail.transform) as GameObject; // create trail piece
+            if (_currentHoleLength >= _holeLength)
+            {
+                _currentHoleLength = 0;
+                newHoleDelay();
+            }
+            else
+            {
+                _currentHoleLength += dis;
+            }
+        }
+        else
+        {
+            _nextHoleDelay -= Time.fixedDeltaTime;
+        }
 
-            float radius = body.transform.localScale.x; // body radius
+        // Spawn trail piece if not creating hole
+        if (isSpawningTrail())
+        {
+            GameObject trailPiece = Instantiate(trailPiecePrefab, _trail.transform) as GameObject; // create trail piece
 
-            // calculate distance of body from last frame
-            float dis = Utilities.vectorDistance(new Vector2(bodyPosition.x,bodyPosition.y),
-                new Vector2(lastBodyPosition.x,lastBodyPosition.y));
+            float radius = _body.transform.localScale.x; // body radius
 
             dis *= 2.3f; // small gap clear
 
-            Vector3 d3 = new Vector3(direction.x, direction.y, 0);
+            Vector3 d3 = new Vector3(_direction.x, _direction.y, 0);
 
-            trailPiece.transform.position = body.transform.position - 0.5f * dis * d3; // move piece
+            trailPiece.transform.position = _body.transform.position - 0.5f * dis * d3; // move piece
 
             trailPiece.transform.localScale = new Vector3(radius, dis, 0); // scale piece
 
-            Utilities.rotateObject(trailPiece, angle); // rotate piece
+            Utilities.pointObject(trailPiece, _angle); // rotate piece
             trailPiece.GetComponent<SpriteRenderer>().color = color; // set color
         }
-        else return;
     }
 
     // randomizes the hole daly and changes the nextHoleDelay accordingly. Also resets the holeTime Counter
     public void newHoleDelay()
     {
-        nextHoleDelay = Random.Range(minHoleDelay,maxHoleDelay);
+        _nextHoleDelay = Random.Range(_holeDelayRange.Item1, _holeDelayRange.Item2);
     }
 
-    // updates all fields that have to do with timing holes. if holeTimer > nextHoleDelay + holeDuration,
-    // sets holeTimer to 0, and calls newHoleDelay(). otherwise only adds deltaTime to holeTimer
-    public void updateTrailTimer()
-    {
-        if (holeTimer > nextHoleDelay + holeDuration)
-        {
-            holeTimer = 0;
-            newHoleDelay();
-        }
-        else holeTimer += Time.deltaTime;
-    }
-
-    // returns true if currently need to spawn trail false otherwise
+    // Returns true if currently need to spawn trail false otherwise
     public bool isSpawningTrail()
-    {
-        if ((holeTimer > nextHoleDelay && holeTimer < nextHoleDelay + holeDuration) || invincible)
+    {   
+        // if should spawn trail
+        if ((_currentHoleLength <= _holeLength && _nextHoleDelay > 0) && !_invincible && _alive)
         {
-            return false;
+            return true;
         }
 
-        else return true;
+        else return false;
     }
 
     // Delete player trail
     public void deleteTrail()
     {
-        Utilities.deleteAllChildren(trail);
+        Utilities.deleteAllChildren(_trail);
     }
 
     // Rotates and moves player to a random area in the map range
     public void randomizeLocation()
     {
         // make random values for starting rotation and position
-        angle = Random.Range(0, 2f * Mathf.PI);
+        _angle = Random.Range(0, 2f * Mathf.PI);
         float x = Random.Range(-GameManager.Instance.xRange, GameManager.Instance.xRange);
         float y = Random.Range(-GameManager.Instance.yRange, GameManager.Instance.yRange);
-        Vector3 location = new Vector3(x,y,0);
+        Vector3 position = new Vector3(x,y,0);
         // rotate and move
-        Utilities.rotateObject(body,angle);
-        body.transform.position = location;
-
-        lastBodyPosition = bodyPosition = body.transform.position; // update these values
+        Utilities.pointObject(_body,_angle);
+        _body.transform.position = position;
     }
 
     // resets all timers of the player
     public void resetTimers()
     {
-        foreach (string powerup in Settings.Instance.playerPowerups)
-        {
-            if(activePowerups != null)
-                activePowerups[powerup].Clear();
-        }
+        timerHandler.deleteTimers();
         newHoleDelay();
     }
 
-    public void setHoleDuration(float duration)
-    {
-        holeDuration = duration;
-    }
-
-    public float getVelocityMagnitude()
-    {
-        return velocityMagnitude;
-    }
-
-    public void setVelocityMagnitude(float velocity)
-    {
-        velocityMagnitude = velocity;
-    }
-
-    // adds count to the value of key in the dictionary
-    public void addPowerupTimer(string key, float count)
-    {
-        activePowerups[key].Add(count);
-    }
 }

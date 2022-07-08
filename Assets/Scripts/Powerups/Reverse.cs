@@ -7,16 +7,7 @@ public class Reverse : Powerup
 
     void Awake()
     {
-        powerupName = "reverse";
-
-        // add available types for powerup
-        availableTypes.Add(PowerupType.RED);
-    }
-
-    void Start()
-    {
-        // set sprite color to powerup type
-        gameObject.GetComponent<SpriteRenderer>().color = typeToColor(powerupType);
+        powerupSettings = Settings.Instance.reverseSettings;
     }
     
     public override void activate(PlayerController playerController)
