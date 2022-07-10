@@ -73,6 +73,9 @@ public abstract class Powerup : MonoBehaviour
             case "invincible":
                 player.invincibleEffect(amount);
                 break;
+            case "square":
+                player.squareEffect(amount);
+                break;
                 // Add here cases for effect powerups
         }
     }

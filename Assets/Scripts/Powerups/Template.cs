@@ -21,13 +21,15 @@ public class Template : Powerup
       in Start() set the object color to be the game type color.
 
       in Activate() (called once when powerup is taken) do what the powerup does. This might mean adding a function in playerConroller script.
+    
+      in the parent script Powerup, add a case for the powerup
 
   */
 
 
     void Awake()
     {
-        powerupName = "Template";
+        powerupName = "template";
 
         // add available types for powerup
         availableTypes.Add(PowerupType.GREEN);

@@ -59,14 +59,20 @@ public class PlayerController : MonoBehaviour
 
     [Header("Objects")]
 
+    
+    public Sprite circleSprite;
+    public Sprite squareSprite;
     [Tooltip("Trail piece prefab.")]
     public GameObject trailPiecePrefab;
     [Tooltip("Player's body object.")]
     private GameObject body;
     [Tooltip("Player's trail object.")]
     private GameObject trail;
+    [Tooltip("Player's helpre collider when it is a square object.")]
+    private GameObject squareHelp;
     [Tooltip("Player's trail color.")]
     public Color color = Color.white;
+   
 
     [Header("Powerup counters and other variables")]
     private int speedCount = 0;
@@ -74,15 +80,28 @@ public class PlayerController : MonoBehaviour
     private bool invincible = false;
     [Tooltip("True in the physics frame a fat powerup was picked up")]
     public bool fatFrame = false;
-   
+
+
+
+    [Header("Square Fields")]
+    private bool isSquare = false;
+    private bool rightSquare = false;
+    private bool leftSquare = false;
+
+    
+
+
 
     // Awake is called when script is initalized
     void Awake()
     {
         // find game objects
         body = gameObject.transform.Find("Body").gameObject;
+        squareHelp = body.transform.Find("SquareHelpCollider").gameObject;
         trail = gameObject.transform.Find("Trail").gameObject;
-        transform.Find("Body").transform.localScale = new Vector3(Settings.Instance.initialSize, Settings.Instance.initialSize, 0);
+        // sets initial size
+        // TODO: why here?
+        body.transform.localScale = new Vector3(Settings.Instance.initialSize, Settings.Instance.initialSize, 0);
     }
 
     // Start is called before the first frame update
@@ -95,6 +114,17 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         getInput();
+        if ((Input.GetKeyDown(KeyCode.RightArrow) && playerName == "Greenlee") || (Input.GetKeyDown(KeyCode.S) && playerName == "Fred"))
+        {
+            rightSquare = true;
+        }
+        
+        if ((Input.GetKeyDown(KeyCode.LeftArrow)&& playerName == "Greenlee") || (Input.GetKeyDown(KeyCode.A) && playerName == "Fred"))
+        {
+            leftSquare = true;
+        }
+        
+
     }
 
     private void FixedUpdate()
@@ -225,6 +255,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
     // applies reverse effect for current frame count times
     public void reverseEffect(int count)
     {
@@ -254,6 +285,24 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void squareEffect(int count)
+    {
+        if (count == 0)
+        {
+            isSquare = false;
+            body.GetComponent<CircleCollider2D>().enabled = true;
+            body.GetComponent<BoxCollider2D>().enabled = false;
+            body.GetComponent<SpriteRenderer>().sprite = circleSprite;
+        }
+        else
+        {
+            isSquare = true;
+            body.GetComponent<CircleCollider2D>().enabled = false;
+            body.GetComponent<BoxCollider2D>().enabled = true;
+            body.GetComponent<SpriteRenderer>().sprite = squareSprite;
+        }
+    }
+
     // on press right
     public void OnRight(InputAction.CallbackContext value)
     {
@@ -276,7 +325,26 @@ public class PlayerController : MonoBehaviour
     private void calculateValues()
     {
         // calculate angle
-        angle += turnDirection * turnSharpness * Time.deltaTime;
+        if (!isSquare)
+        {
+            angle += turnDirection * turnSharpness * Time.deltaTime;
+        }
+        else
+        {
+            if (rightSquare && playerName == "Greenlee")
+            {
+                // calculate angle
+                angle -= 90 * Mathf.Deg2Rad;
+            }
+            rightSquare = false;
+
+            if (leftSquare && playerName == "Greenlee")
+            {
+                // calculate angle
+                angle += 90 * Mathf.Deg2Rad;
+            }
+            leftSquare = false;
+        }
         angle = Utilities.clampAngle(angle);
 
         // calculate vectors
