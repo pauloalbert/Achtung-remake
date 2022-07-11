@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5124591401264267791}
+  - component: {fileID: -223296234889936066}
   - component: {fileID: -1089837843036472956}
   - component: {fileID: 1069917567231350549}
-  - component: {fileID: -223296234889936066}
   m_Layer: 0
   m_Name: TrailPiecePrefab
   m_TagString: Trail
@@ -34,6 +34,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-223296234889936066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8734439403696564753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df9124d3ca32b3948894e8710c544a88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerNum: 0
+  activateTime: 1.5
 --- !u!212 &-1089837843036472956
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -112,17 +126,3 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &-223296234889936066
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8734439403696564753}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df9124d3ca32b3948894e8710c544a88, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerNum: 0
-  activateTime: 1.5

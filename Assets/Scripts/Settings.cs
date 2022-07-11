@@ -118,9 +118,8 @@ public class Settings : Singleton<Settings>
     [Space(6)]
     [Header("Square")]
     public bool squareActive = true;
-    public float squareDuration = 9;
-    public float squareFrequency = 1;
-    public bool squareTimer = true;
+    public PowerupSettings squareSettings = 
+        new PowerupSettings("square", 9f, 1f, true, new List<PowerupType> {PowerupType.GREEN, PowerupType.RED} );
     
 
     public void initUsedPowerups()

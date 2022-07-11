@@ -11,7 +11,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool leftPressed;
 
 
-
     [Space(10)]
 
     [Header("Player Values")]
@@ -37,8 +36,10 @@ public class PlayerController : MonoBehaviour
     // movement speed
     private float _speed;
 
+    private bool _isSquare = false;
+
     // length of player holes
-    [SerializeField] private float _holeLength;
+    private float _holeLength;
     // current hole length
     private float _currentHoleLength;
 
@@ -85,13 +86,19 @@ public class PlayerController : MonoBehaviour
         get => _speed;
         set => _speed = value;
     }
+    public bool IsSquare
+    {
+        get => _isSquare;
+        set => _isSquare = value;
+    }
     public float HoleLength
     {
         get => _holeLength;
         set => _holeLength = value;
     }
 
-
+    [Tooltip("True in the physics frame a fat powerup was picked up")]    // ????????????????
+    public bool fatFrame = false;
 
     [Space(10)]
 
@@ -100,31 +107,24 @@ public class PlayerController : MonoBehaviour
     
     public Sprite circleSprite;
     public Sprite squareSprite;
+
     [Tooltip("Trail piece prefab.")]
     public GameObject trailPiecePrefab;
     [Tooltip("Player's trail color.")]
     public Color color = Color.white;
     [Tooltip("Player's body object.")]
-    public GameObject _body;
+    [SerializeField] private GameObject _body;
     [Tooltip("Player's trail object.")]
     public GameObject _trail;
     [Tooltip("Player's helper collider when it is a square object.")]
     public GameObject squareHelp;
-    
 
-    // Public members
+    public SpriteRenderer spriteRenderer;
+
     public GameObject Body
     {
         get => _body;
     }
-    
-    [Header("Square Fields")]
-    private bool isSquare = false;
-    private bool rightSquare = false;
-    private bool leftSquare = false;
-    [Tooltip("True in the physics frame a fat powerup was picked up")]
-    public bool fatFrame = false;
-
 
 
     [Space(10)]
@@ -145,17 +145,6 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         getInput();
-        if ((Input.GetKeyDown(KeyCode.RightArrow) && playerName == "Greenlee") || (Input.GetKeyDown(KeyCode.S) && playerName == "Fred"))
-        {
-            rightSquare = true;
-        }
-        
-        if ((Input.GetKeyDown(KeyCode.LeftArrow)&& playerName == "Greenlee") || (Input.GetKeyDown(KeyCode.A) && playerName == "Fred"))
-        {
-            leftSquare = true;
-        }
-        
-
     }
 
     private void FixedUpdate()
@@ -183,7 +172,10 @@ public class PlayerController : MonoBehaviour
     public void setDefaultValues()
     {
         powerupHandler.clearEffects();
-        _body.GetComponent<SpriteRenderer>().color = Color.yellow;                                                 // body color
+        _body.GetComponent<BoxCollider2D>().enabled = false;
+        _body.GetComponent<CircleCollider2D>().enabled = true;
+        spriteRenderer.sprite = circleSprite;
+        spriteRenderer.color = Color.yellow;                                                                       // body color
         _body.transform.localScale = new Vector3(Settings.Instance.initialSize, Settings.Instance.initialSize, 0); // size
         _speed = Settings.Instance.initialSpeed;                                                                   // speed
         _turnSharpness = Settings.Instance.initialTurnSharpness;                                                   // turn sharpness
@@ -192,33 +184,25 @@ public class PlayerController : MonoBehaviour
         resetTimers();
     }
 
-    public void squareEffect(int count)
-    {
-        if (count == 0)
-        {
-            isSquare = false;
-            _body.GetComponent<CircleCollider2D>().enabled = true;
-            _body.GetComponent<BoxCollider2D>().enabled = false;
-            _body.GetComponent<SpriteRenderer>().sprite = circleSprite;
-        }
-        else
-        {
-            isSquare = true;
-            _body.GetComponent<CircleCollider2D>().enabled = false;
-            _body.GetComponent<BoxCollider2D>().enabled = true;
-            _body.GetComponent<SpriteRenderer>().sprite = squareSprite;
-        }
-    }
-
     // on press right
     public void OnRight(InputAction.CallbackContext value)
     {
         rightPressed = value.ReadValueAsButton();
+        if(value.started && _isSquare) // frame key was pressed
+        {
+            int rev = _reversedDirection ? -1 : 1;
+            _angle -= 90 * Mathf.Deg2Rad * rev;
+        }
     }
     // on press left
     public void OnLeft(InputAction.CallbackContext value)
     {
         leftPressed = value.ReadValueAsButton();
+        if(value.started && _isSquare) // frame key was pressed
+        {
+            int rev = _reversedDirection ? -1 : 1;
+            _angle += 90 * Mathf.Deg2Rad * rev;
+        }
     }
 
     private void getInput()
@@ -231,26 +215,11 @@ public class PlayerController : MonoBehaviour
     private void calculateMovementValues()
     {
         // calculate angle
-        if (!isSquare)
+        if (!_isSquare)
         {
             _angle += _turnDirection * _turnSharpness * Time.deltaTime;
         }
-        else
-        {
-            if (rightSquare && playerName == "Greenlee")
-            {
-                // calculate angle
-                _angle -= 90 * Mathf.Deg2Rad;
-            }
-            rightSquare = false;
 
-            if (leftSquare && playerName == "Greenlee")
-            {
-                // calculate angle
-                _angle += 90 * Mathf.Deg2Rad;
-            }
-            leftSquare = false;
-        }
         _angle = Utilities.clampAngle(_angle);
 
         // calculate vectors

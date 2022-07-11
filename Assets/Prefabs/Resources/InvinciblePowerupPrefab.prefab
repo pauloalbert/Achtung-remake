@@ -93,9 +93,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7520219371832758214}
+  - component: {fileID: 2440472213217561414}
   - component: {fileID: 1609097979360278762}
   - component: {fileID: 7520219371832756280}
-  - component: {fileID: 2440472213217561414}
   m_Layer: 0
   m_Name: InvinciblePowerupPrefab
   m_TagString: Powerup
@@ -119,6 +119,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2440472213217561414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7520219371832758212}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c63cf59e457fa4d4f82c2f272becf816, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  powerupType: 0
+  powerupSettings:
+    _name: 
+    _duration: 0
+    _frequency: 0
+    _hasTimer: 0
+    _availableTypes: 
 --- !u!212 &1609097979360278762
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -187,22 +206,3 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
---- !u!114 &2440472213217561414
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7520219371832758212}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c63cf59e457fa4d4f82c2f272becf816, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  powerupType: 0
-  powerupSettings:
-    _name: 
-    _duration: 0
-    _frequency: 0
-    _hasTimer: 0
-    _availableTypes: 

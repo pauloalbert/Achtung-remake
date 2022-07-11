@@ -99,6 +99,43 @@ public class PowerupHandler : MonoBehaviour
 
     }
 
+    private void initializePowerupDictionary()
+    {
+        _activePowerups = new Dictionary<string, List<float>>(); 
+
+        foreach (string key in Settings.Instance.playerPowerups)
+        {
+            _activePowerups.Add(key, new List<float>());
+        }
+    }
+
+
+    private float velMultCalculator(int totalVelCount)
+    {
+        if (totalVelCount == 0)
+        {
+            return 1f;
+        }
+        else
+        {
+            return (totalVelCount + 0.5f);
+        }
+    }
+
+
+    // Returns how many effects of effectName are in effect
+    private int effectCount(string effectName)
+    {
+        if (!(_activePowerups.ContainsKey(effectName))) return 0;
+        else return _activePowerups[effectName].Count;
+    }
+
+    /*
+        Effects ===============================================================
+    */
+
+
+
     // Applies speed effect for current frame count times
     public void velocityEffect()
     {
@@ -156,34 +193,21 @@ public class PowerupHandler : MonoBehaviour
         }
     }
 
-    private void initializePowerupDictionary()
+    public void squareEffect(int count)
     {
-        _activePowerups = new Dictionary<string, List<float>>(); 
-
-        foreach (string key in Settings.Instance.playerPowerups)
+        if (count == 0)
         {
-            _activePowerups.Add(key, new List<float>());
-        }
-    }
-
-
-    private float velMultCalculator(int totalVelCount)
-    {
-        if (totalVelCount == 0)
-        {
-            return 1f;
+            playerController.IsSquare = false;
+            playerController.Body.GetComponent<CircleCollider2D>().enabled = true;
+            playerController.Body.GetComponent<BoxCollider2D>().enabled = false;
+            playerController.Body.GetComponent<SpriteRenderer>().sprite = playerController.circleSprite;
         }
         else
         {
-            return (totalVelCount + 0.5f);
+            playerController.IsSquare = true;
+            playerController.Body.GetComponent<CircleCollider2D>().enabled = false;
+            playerController.Body.GetComponent<BoxCollider2D>().enabled = true;
+            playerController.Body.GetComponent<SpriteRenderer>().sprite = playerController.squareSprite;
         }
-    }
-
-
-    // Returns how many effects of effectName are in effect
-    private int effectCount(string effectName)
-    {
-        if (!(_activePowerups.ContainsKey(effectName))) return 0;
-        else return _activePowerups[effectName].Count;
     }
 }

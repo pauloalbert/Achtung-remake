@@ -63,6 +63,7 @@ public abstract class Powerup : MonoBehaviour
                     if (player != playerController && player.isAlive())
                     {
                         player.powerupHandler.giveEffect(powerupSettings.Name, powerupSettings.Duration);
+
                         if(powerupSettings.HasTimer)
                         {
                             player.timerHandler.addTimer(powerupSettings.Duration);
@@ -78,6 +79,7 @@ public abstract class Powerup : MonoBehaviour
                     if(player.isAlive())
                     {
                         player.powerupHandler.giveEffect(powerupSettings.Name, powerupSettings.Duration);
+
                         if(powerupSettings.HasTimer)
                         {
                             player.timerHandler.addTimer(powerupSettings.Duration);
@@ -109,7 +111,7 @@ public abstract class Powerup : MonoBehaviour
                 powerupHandler.invincibleEffect(amount);
                 break;
             case "square":
-                player.squareEffect(amount);
+                powerupHandler.squareEffect(amount);
                 break;
                 // Add here cases for effect powerups
         }

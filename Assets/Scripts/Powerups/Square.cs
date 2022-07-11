@@ -8,16 +8,7 @@ public class Square : Powerup
 
     void Awake()
     {
-        powerupName = "square";
-        // add available types for powerup
-        availableTypes.Add(PowerupType.GREEN);
-        availableTypes.Add(PowerupType.RED);
-    }
-
-    void Start()
-    {
-        // set sprite color to powerup type
-        gameObject.GetComponent<SpriteRenderer>().color = typeToColor(powerupType);
+        powerupSettings = Settings.Instance.squareSettings;
     }
     
     public override void activate(PlayerController playerController)
