@@ -104,7 +104,7 @@ GameObject:
   - component: {fileID: 4422574101237758042}
   - component: {fileID: 4422574101237758043}
   m_Layer: 0
-  m_Name: temp nose
+  m_Name: tempNose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -167,7 +167,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: -5177388603050735206, guid: 8884154dfe85442a3a3578be807dbcdf, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.6039216}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.35686275}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -187,6 +187,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4422574101359404414}
   - component: {fileID: 1199469542441818629}
+  - component: {fileID: 287991807307496739}
   - component: {fileID: 4422574101359404415}
   m_Layer: 0
   m_Name: PlayerPrefab
@@ -226,24 +227,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rightPressed: 0
   leftPressed: 0
-  turnDirection: 0
-  reversedDirection: 0
-  alive: 1
-  turnSharpness: 0
-  velocityMagnitude: 0
-  angle: 0
-  velocityVector: {x: 0, y: 0}
-  direction: {x: 0, y: 0}
-  maxHoleDelay: 0
-  minHoleDelay: 0
-  holeDuration: 0
   playerName: 
   playerNum: 0
+  _holeLength: 0
   circleSprite: {fileID: -2413806693520163455, guid: 770540c1c06fe1140aa7356c49d36255, type: 3}
   squareSprite: {fileID: 7482667652216324306, guid: 080afcbdd73e872498812672b7d2b79a, type: 3}
   trailPiecePrefab: {fileID: 8734439403696564753, guid: 4431d9db410fe1f41b8085b47feb193f, type: 3}
   color: {r: 0, g: 0, b: 0, a: 0}
-  fatFrame: 0
+  _body: {fileID: 4422574102261269906}
+  _trail: {fileID: 4422574101796285339}
+  timerHandler: {fileID: 6309776050421340100}
+  powerupHandler: {fileID: 287991807307496739}
+--- !u!114 &287991807307496739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4422574101359404410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3504847e4eccaf409fb9acbf38d86e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &4422574101359404415
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -346,6 +352,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4422574102261269908}
+  - component: {fileID: 4422574102261269910}
   - component: {fileID: 4422574102261269907}
   - component: {fileID: 4422574102261269909}
   - component: {fileID: 4422574102261269910}
@@ -376,6 +383,18 @@ Transform:
   m_Father: {fileID: 4422574101359404414}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4422574102261269910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4422574102261269906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b50ad45ada74ed45bf2bf3ba4adfabc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!212 &4422574102261269907
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -418,7 +437,7 @@ SpriteRenderer:
   m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.8712125, g: 1, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -512,6 +531,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8748896055389988426}
+  - component: {fileID: 6309776050421340100}
   - component: {fileID: 8029321975181260722}
   - component: {fileID: 4521562479188034805}
   - component: {fileID: 6475918637412150814}
@@ -542,6 +562,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &6309776050421340100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7960955755912804018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cef0469f5f8de214a97b74c7765345af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timerPrefab: {fileID: 6205360262480553609, guid: d499f6854465e7642a9e10609f8005d1, type: 3}
 --- !u!223 &8029321975181260722
 Canvas:
   m_ObjectHideFlags: 0

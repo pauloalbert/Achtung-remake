@@ -7,10 +7,7 @@ public class ClearScreen : Powerup
 
     void Awake()
     {
-        gameObject.GetComponent<SpriteRenderer>().color = typeToColor(powerupType); 
-        powerupName = "clearScreen";
-
-        availableTypes.Add(PowerupType.BLUE);
+        powerupSettings = Settings.Instance.clearScreenSettings;
     }
 
     public override void activate(PlayerController playerController)

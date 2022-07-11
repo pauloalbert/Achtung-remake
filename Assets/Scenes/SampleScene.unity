@@ -415,9 +415,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 4422574101359404410, guid: 3e5c63709e837284cb5e592b98750f8f, type: 3}
-  frozen: 1
-  roundState: 0
-  scores: 000000000000000000000000000000000000000000000000
   xRange: 40
   yRange: 30
 --- !u!114 &243453078
@@ -510,9 +507,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36768f4ee46e09a40b11ed849d0378c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 0}
-  scoreboard: {fileID: 0}
-  goal: {fileID: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -1499,33 +1493,53 @@ MonoBehaviour:
   initialSize: 1.3
   initialSpeed: 17
   initialTurnSharpness: 2.5
-  initialHoleDuration: 0.25
+  initialHoleLength: 3.5
   initialMinHoleDelay: 1
   initialMaxHoleDelay: 4
   initialMinPowerupTime: 2
   initialMaxPowerupTime: 5
+  initialTimerWidth: 0.75
+  initialTimerOffset: 1
   usedPowerups: []
   playerPowerups: []
   speedActive: 1
-  speedDuration: 5
-  speedFrequency: 1
-  speedTimer: 1
+  speedSettings:
+    _name: speed
+    _duration: 5
+    _frequency: 1
+    _hasTimer: 1
+    _availableTypes: 0000000001000000
+  speedScale: 2.5
   clearScreenActive: 1
-  clearScreenFrequency: 1
+  clearScreenSettings:
+    _name: clearScreen
+    _duration: 0
+    _frequency: 1
+    _hasTimer: 1
+    _availableTypes: 02000000
   reverseActive: 1
-  reverseDuration: 5
-  reverseFrequency: 1
-  reverseTimer: 1
+  reverseSettings:
+    _name: reverse
+    _duration: 5
+    _frequency: 1
+    _hasTimer: 1
+    _availableTypes: 01000000
   fatActive: 1
-  fatDuration: 5
-  fatFrequency: 1
-  fatTimer: 1
+  fatSettings:
+    _name: fat
+    _duration: 5
+    _frequency: 1
+    _hasTimer: 1
+    _availableTypes: 0000000001000000
   fatMultiplier: 2.5
   holeFatMultiplier: 1.4
   invincibleActive: 1
-  invincibleDuration: 5
-  invincibleFrequency: 1
-  invincibleTimer: 1
+  invincibleSettings:
+    _name: invincible
+    _duration: 5
+    _frequency: 1
+    _hasTimer: 1
+    _availableTypes: 00000000
   squareActive: 0
   squareDuration: 9
   squareFrequency: 1
