@@ -7,6 +7,12 @@ public class Collide : MonoBehaviour
 
     private PlayerController playerController;
 
+    public PlayerController getPlayerController()
+    {
+        return playerController;
+    }
+
+
     void Awake()
     {
         playerController = gameObject.GetComponentInParent<PlayerController>();
@@ -73,7 +79,6 @@ public class Collide : MonoBehaviour
 
         
     }
-
     
 
 }

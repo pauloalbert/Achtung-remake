@@ -17,6 +17,9 @@ public class Settings : Singleton<Settings>
     [Header("=== Player Settings ===")]
     [Space(20)]
 
+
+   
+
     // array of player names sorted by player number
     public string[] names =
     {
@@ -112,7 +115,14 @@ public class Settings : Singleton<Settings>
     public PowerupSettings invincibleSettings = 
         new PowerupSettings("invincible", 5f, 1f, true, new List<PowerupType> {PowerupType.GREEN} );
 
-        
+    [Space(6)]
+    [Header("Square")]
+    public bool squareActive = true;
+    public float squareDuration = 9;
+    public float squareFrequency = 1;
+    public bool squareTimer = true;
+    
+
     public void initUsedPowerups()
     {
         usedPowerups = new List<string>();
@@ -146,6 +156,12 @@ public class Settings : Singleton<Settings>
             usedPowerups.Add("invincible");
             playerPowerups.Add("invincible");
             PowerupPrefabs["invincible"] = Resources.Load<GameObject>("InvinciblePowerupPrefab");
+        }
+        if (squareActive)
+        {
+            usedPowerups.Add("square");
+            playerPowerups.Add("square");
+            PowerupPrefabs["square"] = Resources.Load<GameObject>("SquarePowerupPrefab");
         }
     }
 

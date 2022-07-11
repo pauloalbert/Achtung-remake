@@ -97,6 +97,9 @@ public class PlayerController : MonoBehaviour
 
     [Header("Objects")]
 
+    
+    public Sprite circleSprite;
+    public Sprite squareSprite;
     [Tooltip("Trail piece prefab.")]
     public GameObject trailPiecePrefab;
     [Tooltip("Player's trail color.")]
@@ -105,6 +108,8 @@ public class PlayerController : MonoBehaviour
     public GameObject _body;
     [Tooltip("Player's trail object.")]
     public GameObject _trail;
+    [Tooltip("Player's helper collider when it is a square object.")]
+    public GameObject squareHelp;
     
 
     // Public members
@@ -112,6 +117,13 @@ public class PlayerController : MonoBehaviour
     {
         get => _body;
     }
+    
+    [Header("Square Fields")]
+    private bool isSquare = false;
+    private bool rightSquare = false;
+    private bool leftSquare = false;
+    [Tooltip("True in the physics frame a fat powerup was picked up")]
+    public bool fatFrame = false;
 
 
 
@@ -133,6 +145,17 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         getInput();
+        if ((Input.GetKeyDown(KeyCode.RightArrow) && playerName == "Greenlee") || (Input.GetKeyDown(KeyCode.S) && playerName == "Fred"))
+        {
+            rightSquare = true;
+        }
+        
+        if ((Input.GetKeyDown(KeyCode.LeftArrow)&& playerName == "Greenlee") || (Input.GetKeyDown(KeyCode.A) && playerName == "Fred"))
+        {
+            leftSquare = true;
+        }
+        
+
     }
 
     private void FixedUpdate()
@@ -169,6 +192,24 @@ public class PlayerController : MonoBehaviour
         resetTimers();
     }
 
+    public void squareEffect(int count)
+    {
+        if (count == 0)
+        {
+            isSquare = false;
+            body.GetComponent<CircleCollider2D>().enabled = true;
+            body.GetComponent<BoxCollider2D>().enabled = false;
+            body.GetComponent<SpriteRenderer>().sprite = circleSprite;
+        }
+        else
+        {
+            isSquare = true;
+            body.GetComponent<CircleCollider2D>().enabled = false;
+            body.GetComponent<BoxCollider2D>().enabled = true;
+            body.GetComponent<SpriteRenderer>().sprite = squareSprite;
+        }
+    }
+
     // on press right
     public void OnRight(InputAction.CallbackContext value)
     {
@@ -190,8 +231,27 @@ public class PlayerController : MonoBehaviour
     private void calculateMovementValues()
     {
         // calculate angle
-        _angle += _turnDirection * _turnSharpness * Time.deltaTime;
-        _angle = Utilities.clampAngle(_angle);
+        if (!isSquare)
+        {
+            _angle += turnDirection * turnSharpness * Time.deltaTime;
+        }
+        else
+        {
+            if (rightSquare && playerName == "Greenlee")
+            {
+                // calculate angle
+                _angle -= 90 * Mathf.Deg2Rad;
+            }
+            rightSquare = false;
+
+            if (leftSquare && playerName == "Greenlee")
+            {
+                // calculate angle
+                _angle += 90 * Mathf.Deg2Rad;
+            }
+            leftSquare = false;
+        }
+        _angle = Utilities.clampAngle(angle);
 
         // calculate vectors
         _velocityVector = Utilities.CreatePolar(_speed * Time.deltaTime, _angle);
