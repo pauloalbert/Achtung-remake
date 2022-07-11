@@ -70,13 +70,10 @@ public class PowerupHandler : MonoBehaviour
 
     private void totalPowerupEffect()
     {
-        // Adding an if statement for the situation where a field needs to remain unchanged to avoid miscalculations
-        int totalVelCount = _velocityCount;
-        int totalThickCount = _sizeCount;
 
-        float totalVelMult = velMultCalculator(totalVelCount);
+        float totalVelMult = velMultCalculator(_velocityCount);
 
-        if (totalVelCount == 0)
+        if (totalVelMult == 0)
         {
             playerController.Speed = Settings.Instance.initialSpeed;
             playerController.TurnSharpness = Settings.Instance.initialTurnSharpness;
@@ -109,16 +106,20 @@ public class PowerupHandler : MonoBehaviour
         }
     }
 
-
+    // gets the amount calculates the amount the initial speed is multiplied by. 
     private float velMultCalculator(int totalVelCount)
     {
         if (totalVelCount == 0)
         {
             return 1f;
+        } 
+        else if(totalVelCount > 0)
+        {
+            return (totalVelCount + 0.5f);
         }
         else
         {
-            return (totalVelCount + 0.5f);
+            return (Mathf.Pow(0.5f,-totalVelCount));
         }
     }
 
