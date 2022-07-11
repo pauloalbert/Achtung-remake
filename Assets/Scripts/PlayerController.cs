@@ -197,16 +197,16 @@ public class PlayerController : MonoBehaviour
         if (count == 0)
         {
             isSquare = false;
-            body.GetComponent<CircleCollider2D>().enabled = true;
-            body.GetComponent<BoxCollider2D>().enabled = false;
-            body.GetComponent<SpriteRenderer>().sprite = circleSprite;
+            _body.GetComponent<CircleCollider2D>().enabled = true;
+            _body.GetComponent<BoxCollider2D>().enabled = false;
+            _body.GetComponent<SpriteRenderer>().sprite = circleSprite;
         }
         else
         {
             isSquare = true;
-            body.GetComponent<CircleCollider2D>().enabled = false;
-            body.GetComponent<BoxCollider2D>().enabled = true;
-            body.GetComponent<SpriteRenderer>().sprite = squareSprite;
+            _body.GetComponent<CircleCollider2D>().enabled = false;
+            _body.GetComponent<BoxCollider2D>().enabled = true;
+            _body.GetComponent<SpriteRenderer>().sprite = squareSprite;
         }
     }
 
@@ -233,7 +233,7 @@ public class PlayerController : MonoBehaviour
         // calculate angle
         if (!isSquare)
         {
-            _angle += turnDirection * turnSharpness * Time.deltaTime;
+            _angle += _turnDirection * _turnSharpness * Time.deltaTime;
         }
         else
         {
@@ -251,7 +251,7 @@ public class PlayerController : MonoBehaviour
             }
             leftSquare = false;
         }
-        _angle = Utilities.clampAngle(angle);
+        _angle = Utilities.clampAngle(_angle);
 
         // calculate vectors
         _velocityVector = Utilities.CreatePolar(_speed * Time.deltaTime, _angle);
