@@ -7,25 +7,16 @@ public class Collide : MonoBehaviour
 
     private PlayerController playerController;
 
+    public PlayerController getPlayerController()
+    {
+        return playerController;
+    }
+
+
     void Awake()
     {
         playerController = gameObject.GetComponentInParent<PlayerController>();
     }
-
-    // an idea for handling activation of the trail pieces. Probably problematic
-    /*
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        switch (other.tag)
-        {
-            case "Trail":
-                {
-                    other.GetComponent<Trail>().exitedCircle();
-                }
-                break;
-        }
-    }
-    */
 
     private void OnTriggerEnter2D(Collider2D other)
     {   
@@ -38,7 +29,7 @@ public class Collide : MonoBehaviour
                     {
                         playerController.kill();
                     }
-                    break;
+                break;
                 case "ActiveTrail":
                 {
                     if (playerController.isSpawningTrail())
@@ -63,7 +54,7 @@ public class Collide : MonoBehaviour
                 case "Powerup":
                 {
                     other.GetComponent<Powerup>().activate(playerController); // activate powerup
-                    
+
                     Destroy(other.gameObject); // destroy powerup
                 }
                 break;
@@ -73,7 +64,6 @@ public class Collide : MonoBehaviour
 
         
     }
-
     
 
 }

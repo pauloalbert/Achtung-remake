@@ -1540,6 +1540,13 @@ MonoBehaviour:
     _frequency: 1
     _hasTimer: 1
     _availableTypes: 00000000
+  squareActive: 1
+  squareSettings:
+    _name: square
+    _duration: 9
+    _frequency: 1
+    _hasTimer: 1
+    _availableTypes: 0000000001000000
 --- !u!4 &1898533545
 Transform:
   m_ObjectHideFlags: 0
