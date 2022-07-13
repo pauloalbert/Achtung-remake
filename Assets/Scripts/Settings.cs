@@ -119,7 +119,7 @@ public class Settings : Singleton<Settings>
         new PowerupSettings("thin", 5f, 1f, true, new List<PowerupType> {PowerupType.GREEN, PowerupType.RED} );
 
     [Range(0.2f, 5f)] public float fatMultiplier = 2f;
-    [Range(1f, 5f)] public float holeFatMultiplier = 1.2f;
+    [Range(1f, 5f)] public float holeFatMultiplier = 2f;
 
     [Space(6)]
     [Header("Invincible")]

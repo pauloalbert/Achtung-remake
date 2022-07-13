@@ -73,6 +73,7 @@ public class PowerupHandler : MonoBehaviour
 
         float totalVelMult = velMultCalculator(_velocityCount);
 
+        // update player speed
         if (totalVelMult == 0)
         {
             playerController.Speed = Settings.Instance.initialSpeed;
@@ -84,14 +85,14 @@ public class PowerupHandler : MonoBehaviour
             playerController.TurnSharpness = (float) (Settings.Instance.initialTurnSharpness * ((totalVelMult - 1) * 0.5f + 1));
         }
 
-        if (_sizeCount == 0 && _velocityCount == 0)
+        // update hole length
+        if (_sizeCount <= 0)
         {
             playerController.HoleLength = Settings.Instance.initialHoleLength;
         }
         else
         {
-            //remember add helper function
-            playerController.HoleLength = Settings.Instance.initialHoleLength * (float)(System.Math.Pow(Settings.Instance.holeFatMultiplier, _sizeCount) / totalVelMult);
+            playerController.HoleLength = Settings.Instance.initialHoleLength * (float)(System.Math.Pow(Settings.Instance.holeFatMultiplier, _sizeCount));
         }
 
     }

@@ -1545,8 +1545,8 @@ MonoBehaviour:
     _frequency: 1
     _hasTimer: 1
     _availableTypes: 0000000001000000
-  fatMultiplier: 2.5
-  holeFatMultiplier: 1.4
+  fatMultiplier: 2
+  holeFatMultiplier: 2
   invincibleActive: 1
   invincibleSettings:
     _name: invincible
