@@ -1509,7 +1509,14 @@ MonoBehaviour:
     _frequency: 1
     _hasTimer: 1
     _availableTypes: 0000000001000000
-  speedScale: 2.5
+  speedAdd: 0.5
+  slowActive: 1
+  slowSettings:
+    _name: slow
+    _duration: 5
+    _frequency: 1
+    _hasTimer: 1
+    _availableTypes: 0000000001000000
   clearScreenActive: 1
   clearScreenSettings:
     _name: clearScreen
@@ -1531,8 +1538,15 @@ MonoBehaviour:
     _frequency: 1
     _hasTimer: 1
     _availableTypes: 0000000001000000
-  fatMultiplier: 2.5
-  holeFatMultiplier: 1.4
+  thinActive: 1
+  thinSettings:
+    _name: thin
+    _duration: 5
+    _frequency: 1
+    _hasTimer: 1
+    _availableTypes: 0000000001000000
+  fatMultiplier: 2
+  holeFatMultiplier: 2
   invincibleActive: 1
   invincibleSettings:
     _name: invincible

@@ -136,9 +136,8 @@ MonoBehaviour:
   leftPressed: 0
   playerName: 
   playerNum: 0
-  fatFrame: 0
-  circleSprite: {fileID: 21300000, guid: 077f20674324e6242a3228c6ce8f083b, type: 3}
-  squareSprite: {fileID: 21300000, guid: 099f941171a675e4a9c7260d0c15b88d, type: 3}
+  circleSprite: {fileID: 21300000, guid: 8b3998e79ef9c2246bbc2d81849369d1, type: 3}
+  squareSprite: {fileID: 21300000, guid: d530945f63f2eb74499def7a3980cbbf, type: 3}
   trailPiecePrefab: {fileID: 8734439403696564753, guid: 4431d9db410fe1f41b8085b47feb193f, type: 3}
   color: {r: 0, g: 0, b: 0, a: 0}
   _body: {fileID: 4422574102261269906}
@@ -344,7 +343,7 @@ SpriteRenderer:
   m_SortingLayerID: 1015515061
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 077f20674324e6242a3228c6ce8f083b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8b3998e79ef9c2246bbc2d81849369d1, type: 3}
   m_Color: {r: 1, g: 1, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -461,7 +460,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7462860366266421098}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7736ec6b1c4ba914c958ff03a8995f0c, type: 3}
+  m_Script: {fileID: 11500000, guid: 3edc529577a712640acca6a5cf0fb1d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!61 &5999238957906726241

@@ -86,7 +86,13 @@ public class Settings : Singleton<Settings>
     public bool speedActive = true;
     public PowerupSettings speedSettings = 
         new PowerupSettings("speed", 5f, 1f, true, new List<PowerupType> {PowerupType.GREEN, PowerupType.RED} );
-    [Range(0.2f, 5f)] public float speedScale = 2.5f;
+    [Range(0.2f, 5f)] public float speedAdd = 0.5f; // amont that ist aded to speed with pseed peoweru p
+
+    [Space(6)]
+    [Header("Slow")]
+    public bool slowActive = true;
+    public PowerupSettings slowSettings = 
+        new PowerupSettings("slow", 5f, 1f, true, new List<PowerupType> {PowerupType.GREEN, PowerupType.RED} );
 
     [Space(6)]
     [Header("Clear Screen")]
@@ -106,8 +112,14 @@ public class Settings : Singleton<Settings>
     public PowerupSettings fatSettings = 
         new PowerupSettings("fat", 5f, 1f, true, new List<PowerupType> {PowerupType.GREEN, PowerupType.RED} );
 
+    [Space(6)]
+    [Header("Thin")]
+    public bool thinActive = true;
+    public PowerupSettings thinSettings = 
+        new PowerupSettings("thin", 5f, 1f, true, new List<PowerupType> {PowerupType.GREEN, PowerupType.RED} );
+
     [Range(0.2f, 5f)] public float fatMultiplier = 2f;
-    [Range(1f, 5f)] public float holeFatMultiplier = 1.2f;
+    [Range(1f, 5f)] public float holeFatMultiplier = 2f;
 
     [Space(6)]
     [Header("Invincible")]
@@ -133,6 +145,12 @@ public class Settings : Singleton<Settings>
             playerPowerups.Add("speed");
             PowerupPrefabs["speed"] = Resources.Load<GameObject>("SpeedPowerupPrefab");
         }
+        if(slowActive)
+        { 
+            usedPowerups.Add("slow");
+            playerPowerups.Add("slow");
+            PowerupPrefabs["slow"] = Resources.Load<GameObject>("SlowPowerupPrefab");
+        }
         if(clearScreenActive)
         {
             usedPowerups.Add("clearScreen");
@@ -149,6 +167,12 @@ public class Settings : Singleton<Settings>
             usedPowerups.Add("fat");
             playerPowerups.Add("fat");
             PowerupPrefabs["fat"] = Resources.Load<GameObject>("FatPowerupPrefab");
+        }
+        if(thinActive)
+        { 
+            usedPowerups.Add("thin");
+            playerPowerups.Add("thin");
+            PowerupPrefabs["thin"] = Resources.Load<GameObject>("ThinPowerupPrefab");
         }
         if (invincibleActive)
         {

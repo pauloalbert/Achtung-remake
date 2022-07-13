@@ -97,9 +97,6 @@ public class PlayerController : MonoBehaviour
         set => _holeLength = value;
     }
 
-    [Tooltip("True in the physics frame a fat powerup was picked up")]    // ????????????????
-    public bool fatFrame = false;
-
     [Space(10)]
 
     [Header("Objects")]

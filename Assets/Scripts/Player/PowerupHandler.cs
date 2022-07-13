@@ -70,13 +70,11 @@ public class PowerupHandler : MonoBehaviour
 
     private void totalPowerupEffect()
     {
-        // Adding an if statement for the situation where a field needs to remain unchanged to avoid miscalculations
-        int totalVelCount = _velocityCount;
-        int totalThickCount = _sizeCount;
 
-        float totalVelMult = velMultCalculator(totalVelCount);
+        float totalVelMult = velMultCalculator(_velocityCount);
 
-        if (totalVelCount == 0)
+        // update player speed
+        if (totalVelMult == 0)
         {
             playerController.Speed = Settings.Instance.initialSpeed;
             playerController.TurnSharpness = Settings.Instance.initialTurnSharpness;
@@ -87,14 +85,14 @@ public class PowerupHandler : MonoBehaviour
             playerController.TurnSharpness = (float) (Settings.Instance.initialTurnSharpness * ((totalVelMult - 1) * 0.5f + 1));
         }
 
-        if (_sizeCount == 0 && _velocityCount == 0)
+        // update hole length
+        if (_sizeCount <= 0)
         {
             playerController.HoleLength = Settings.Instance.initialHoleLength;
         }
         else
         {
-            //remember add helper function
-            playerController.HoleLength = Settings.Instance.initialHoleLength * (float)(System.Math.Pow(Settings.Instance.holeFatMultiplier, _sizeCount) / totalVelMult);
+            playerController.HoleLength = Settings.Instance.initialHoleLength * (float)(System.Math.Pow(Settings.Instance.holeFatMultiplier, _sizeCount));
         }
 
     }
@@ -109,16 +107,20 @@ public class PowerupHandler : MonoBehaviour
         }
     }
 
-
+    // gets the amount calculates the amount the initial speed is multiplied by. 
     private float velMultCalculator(int totalVelCount)
     {
         if (totalVelCount == 0)
         {
             return 1f;
+        } 
+        else if(totalVelCount > 0)
+        {
+            return (totalVelCount + 0.5f);
         }
         else
         {
-            return (totalVelCount + 0.5f);
+            return (Mathf.Pow(0.5f,-totalVelCount));
         }
     }
 
