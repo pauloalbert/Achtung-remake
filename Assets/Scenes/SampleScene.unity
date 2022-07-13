@@ -1502,14 +1502,14 @@ MonoBehaviour:
   initialTimerOffset: 1
   usedPowerups: []
   playerPowerups: []
-  speedActive: 0
+  speedActive: 1
   speedSettings:
     _name: speed
     _duration: 5
     _frequency: 1
     _hasTimer: 1
     _availableTypes: 0000000001000000
-  speedScale: 2.5
+  speedAdd: 0.5
   slowActive: 1
   slowSettings:
     _name: slow
@@ -1517,21 +1517,21 @@ MonoBehaviour:
     _frequency: 1
     _hasTimer: 1
     _availableTypes: 0000000001000000
-  clearScreenActive: 0
+  clearScreenActive: 1
   clearScreenSettings:
     _name: clearScreen
     _duration: 0
     _frequency: 1
     _hasTimer: 1
     _availableTypes: 02000000
-  reverseActive: 0
+  reverseActive: 1
   reverseSettings:
     _name: reverse
     _duration: 5
     _frequency: 1
     _hasTimer: 1
     _availableTypes: 01000000
-  fatActive: 0
+  fatActive: 1
   fatSettings:
     _name: fat
     _duration: 5
@@ -1547,14 +1547,14 @@ MonoBehaviour:
     _availableTypes: 0000000001000000
   fatMultiplier: 2.5
   holeFatMultiplier: 1.4
-  invincibleActive: 0
+  invincibleActive: 1
   invincibleSettings:
     _name: invincible
     _duration: 5
     _frequency: 1
     _hasTimer: 1
     _availableTypes: 00000000
-  squareActive: 0
+  squareActive: 1
   squareSettings:
     _name: square
     _duration: 9
