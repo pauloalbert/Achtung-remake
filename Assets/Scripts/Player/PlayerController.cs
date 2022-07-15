@@ -169,6 +169,7 @@ public class PlayerController : MonoBehaviour
     public void setDefaultValues()
     {
         powerupHandler.clearEffects();
+        _currentHoleLength = 0;
         _body.GetComponent<BoxCollider2D>().enabled = false;
         _body.GetComponent<CircleCollider2D>().enabled = true;
         spriteRenderer.sprite = circleSprite;
